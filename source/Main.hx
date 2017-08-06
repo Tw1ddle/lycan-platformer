@@ -3,6 +3,9 @@ package;
 import flixel.FlxGame;
 import openfl.display.Sprite;
 
+//import lycan.world.World;
+//import lycan.world.WorldLoader;
+
 import lycan.states.LycanRootState;
 
 class Main extends Sprite {
