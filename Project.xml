@@ -27,7 +27,6 @@
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="sure" />
-	<haxelib name="tink_core" />
 	<haxelib name="tink_lang" />
 	<haxelib name="tink_macro" />
 	<haxelib name="lycan" />
