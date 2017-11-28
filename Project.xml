@@ -26,6 +26,7 @@
 
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
+	<haxelib name="msignal"/>
 	<haxelib name="sure" />
 	<haxelib name="tink_core" />
 	<haxelib name="tink_lang" />

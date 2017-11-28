@@ -3,14 +3,9 @@ package;
 import flixel.FlxGame;
 import openfl.display.Sprite;
 
-//import lycan.world.World;
-//import lycan.world.WorldLoader;
-
-import lycan.states.LycanRootState;
-
 class Main extends Sprite {
 	public function new() {
 		super();
-		addChild(new FlxGame(0, 0, LycanRootState, 1, 60, 60, true, false));
+		addChild(new FlxGame(0, 0, RootState, 1, 60, 60, true, false));
 	}
 }
