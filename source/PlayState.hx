@@ -4,7 +4,7 @@ import lycan.states.LycanRootState;
 import lycan.states.LycanState;
 import flixel.FlxG;
 
-class PlayState extends LycanState {
+class PlayState extends BaseSubState {
 	public function new() {
 		super();
 	}

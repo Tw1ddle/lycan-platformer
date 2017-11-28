@@ -1,5 +1,6 @@
 package;
 
+import flixel.system.scaleModes.RatioScaleMode;
 import lycan.states.LycanRootState;
 import flixel.FlxG;
 
@@ -12,24 +13,29 @@ import lycan.components.Entity;
 import lycan.world.World;
 
 class RootState extends LycanRootState {
+	private var states = [];
+	
 	public function new() {
 		super();
 	}
 	
 	override public function create():Void {
 		super.create();
-		openSubState(new PlayState());
+		
+		FlxG.scaleMode = new RatioScaleMode();
+		
+		openPlaystate();
 	}
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
 		if (FlxG.keys.justPressed.R) {
-			// TODO reload world
+			openPlaystate();
 		}
 	}
 	
 	private function openPlaystate():Void {
-		
+		openSubState(new NapePhysicsTestState());
 	}
 }
