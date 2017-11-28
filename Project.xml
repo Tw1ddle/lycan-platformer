@@ -29,7 +29,6 @@
 	<haxelib name="msignal"/>
 	<haxelib name="nape"/>
 	<haxelib name="sure" />
-	<haxelib name="tink_core" />
 	<haxelib name="tink_lang" />
 	<haxelib name="tink_macro" />
 	<haxelib name="lycan" />
