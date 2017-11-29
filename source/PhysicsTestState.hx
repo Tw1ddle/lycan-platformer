@@ -1,11 +1,11 @@
 package;
 
+import box2D.dynamics.B2World;
 import lycan.states.LycanState;
-import lycan.world.NapeSpace;
+import lycan.world.Box2D;
 
-class NapePhysicsTestState extends BaseSubState {
-	private var space:NapeSpace;
-	private var player:Player;
+class PhysicsTestState extends BaseSubState {
+	private var world:B2World;
 	
 	public function new() {
 		super();
@@ -14,12 +14,10 @@ class NapePhysicsTestState extends BaseSubState {
 	override public function create():Void {
 		super.create();
 		
-		space = new NapeSpace();
-		NapeSpace.init();
-		NapeSpace.drawDebug = true;
+		var b2 = Box2D.get;
+		world = b2.world;
+		b2.drawDebug = true;
 		
-		player = new Player();
-		add(player);
 	}
 	
 	override public function update(dt:Float):Void {
@@ -29,6 +27,6 @@ class NapePhysicsTestState extends BaseSubState {
 	override public function draw():Void {
 		super.draw();
 		
-		space.draw();
+		//space.draw();
 	}
 }

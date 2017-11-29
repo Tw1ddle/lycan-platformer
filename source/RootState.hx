@@ -36,6 +36,6 @@ class RootState extends LycanRootState {
 	}
 	
 	private function openPlaystate():Void {
-		openSubState(new NapePhysicsTestState());
+		openSubState(new PhysicsTestState());
 	}
 }
