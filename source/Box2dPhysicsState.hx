@@ -78,7 +78,7 @@ class Box2dPhysicsState extends LycanState {
 			var wallBd:B2BodyDef = new B2BodyDef();			
 			// Left
 			wallBd.position.set(-95 / physicsScale, 360 / physicsScale / 2);
-			wall.setAsBox(100 / physicsScale, 400 / physicsScale/2);
+			wall.setAsBox(100 / physicsScale, 400 / physicsScale / 2);
 			world.createBody(wallBd).createFixture2(wall);
 			// Right
 			wallBd.position.set((640 + 95) / physicsScale, 360 / physicsScale / 2);
@@ -90,6 +90,15 @@ class Box2dPhysicsState extends LycanState {
 			// Bottom
 			wallBd.position.set(640 / physicsScale / 2, (360 + 95) / physicsScale);
 			world.createBody(wallBd).createFixture2(wall);
+		}();
+		
+		function addPlatform() {
+			var platform:B2PolygonShape = new B2PolygonShape();
+			var platformDef:B2BodyDef = new B2BodyDef();
+			
+			platformDef.position.set(300 / physicsScale, 200 / physicsScale);
+			platform.setAsBox(200 / physicsScale, 25 / physicsScale);
+			world.createBody(platformDef).createFixture2(platform);
 		}();
 		
 		function addBodies() {

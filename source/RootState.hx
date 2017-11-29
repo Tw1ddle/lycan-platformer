@@ -7,6 +7,7 @@ import lycan.states.LycanRootState;
 class RootState extends LycanRootState {
 	public function new() {
 		super();
+		persistentUpdate = true;
 	}
 	
 	override public function create():Void {
@@ -24,6 +25,8 @@ class RootState extends LycanRootState {
 	}
 	
 	private function openPlaystate():Void {
+		closeSubState();
+		
 		openSubState(new Box2dPhysicsState());
 	}
 }
