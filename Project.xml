@@ -28,7 +28,7 @@
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="msignal"/>
-	<haxelib name="nape"/>
+	<haxelib name="box2d"/>
 	<haxelib name="sure" />
 	<haxelib name="tink_lang" />
 	<haxelib name="tink_macro" />
