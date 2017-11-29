@@ -24,6 +24,7 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
+	<haxelib name="box2d" />
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="msignal"/>
