@@ -45,6 +45,8 @@ class Box2dPhysicsState extends LycanState {
 	private var world:B2World = null; // Box2D world
 	private var enableWarmStarting:Bool = true; // Enable correction code that should reduce tunnelling etc
 	
+	private var worldBodies:Array<B2Body> = [];
+	
 	private var debugSprite:Sprite = null; // Debug sprite for displaying the Box2D world
 	
 	private var mouseJoint:B2MouseJoint = null; // Mouse joint for interactively manipulating the Box2D world
@@ -91,92 +93,92 @@ class Box2dPhysicsState extends LycanState {
 		}();
 		
 		function addBodies() {
-		var ground:B2Body = world.getGroundBody();
-		var i:Int;
-		var anchor:B2Vec2 = new B2Vec2();
-		var body:B2Body;
-		var fd:B2FixtureDef;
-		
-		var boxDef:B2PolygonShape = new B2PolygonShape();
-		
-		var worldBodies:Array<B2Body> = [];
-		var bodyDef:B2BodyDef = new B2BodyDef();
-		for(i in 0...5) {
-			bodyDef.type = 2;
-			fd = new B2FixtureDef();
-			fd.shape = boxDef;
-			fd.density = 1.0;
+			var ground:B2Body = world.getGroundBody();
+			var i:Int;
+			var anchor:B2Vec2 = new B2Vec2();
+			var body:B2Body;
+			var fd:B2FixtureDef;
 			
-			// Override the default friction
-			fd.friction = 0.3;
-			fd.restitution = 0.1;
-			boxDef.setAsBox((Math.random() * 5 + 10) / physicsScale, (Math.random() * 5 + 10) / physicsScale);
-			bodyDef.position.set((Math.random() * 400 + 120) / physicsScale, (Math.random() * 150 + 50) / physicsScale);
-			bodyDef.angle = Math.random() * Math.PI;
-			body = world.createBody(bodyDef);
-			body.createFixture(fd);
-			worldBodies.push(body);
-		}
-		
-		var circDef:B2CircleShape;
-		for (i in 0...5) {
-			var bodyDefC:B2BodyDef = new B2BodyDef();
-			bodyDefC.type = 2;
-			circDef = new B2CircleShape((Math.random() * 5 + 10) / physicsScale);
-			fd = new B2FixtureDef();
-			fd.shape = circDef;
-			fd.density = 1.0;
+			var boxDef:B2PolygonShape = new B2PolygonShape();
 			
-			// Override the default friction
-			fd.friction = 0.3;
-			fd.restitution = 0.1;
-			bodyDefC.position.set((Math.random() * 400 + 120) / physicsScale, (Math.random() * 150 + 50) / physicsScale);
-			bodyDefC.angle = Math.random() * Math.PI;
-			body = world.createBody(bodyDefC);
-			body.createFixture(fd);
-			worldBodies.push(body);
-		}
-		
-		var bodyDefP:B2BodyDef;
-		for (i in 0...5) {
-			bodyDefP = new B2BodyDef();
-			bodyDefP.type = 2;
-			
-			var polyDef:B2PolygonShape = new B2PolygonShape();
-			if (Math.random() > 0.66) {
-				polyDef.setAsArray([
-					new B2Vec2((-10 -Math.random()*10) / physicsScale, ( 10 +Math.random()*10) / physicsScale),
-					new B2Vec2(( -5 -Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale),
-					new B2Vec2((  5 +Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale),
-					new B2Vec2(( 10 +Math.random() * 10) / physicsScale, ( 10 +Math.random() * 10) / physicsScale)
-					]);
-			} else if (Math.random() > 0.5) {
-				var array:Array<B2Vec2> = [];
-				array[0] = new B2Vec2(0, (10 +Math.random()*10) / physicsScale);
-				array[2] = new B2Vec2((-5 -Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale);
-				array[3] = new B2Vec2(( 5 +Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale);
-				array[1] = new B2Vec2((array[0].x + array[2].x), (array[0].y + array[2].y));
-				array[1].multiply(Math.random()/2+0.8);
-				array[4] = new B2Vec2((array[3].x + array[0].x), (array[3].y + array[0].y));
-				array[4].multiply(Math.random() / 2 + 0.8);
-				polyDef.setAsArray(array);
-			} else {
-				polyDef.setAsArray([
-					new B2Vec2(0, (10 +Math.random()*10) / physicsScale),
-					new B2Vec2((-5 -Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale),
-					new B2Vec2(( 5 +Math.random() * 10) / physicsScale, ( -10 -Math.random() * 10) / physicsScale)
-				]);
+			var bodyDef:B2BodyDef = new B2BodyDef();
+			for(i in 0...5) {
+				bodyDef.type = 2;
+				fd = new B2FixtureDef();
+				fd.shape = boxDef;
+				fd.density = 1.0;
+				
+				// Override the default friction
+				fd.friction = 0.3;
+				fd.restitution = 0.1;
+				boxDef.setAsBox((Math.random() * 5 + 10) / physicsScale, (Math.random() * 5 + 10) / physicsScale);
+				bodyDef.position.set((Math.random() * 400 + 120) / physicsScale, (Math.random() * 150 + 50) / physicsScale);
+				bodyDef.angle = Math.random() * Math.PI;
+				body = world.createBody(bodyDef);
+				body.createFixture(fd);
+				worldBodies.push(body);
 			}
-			fd = new B2FixtureDef();
-			fd.shape = polyDef;
-			fd.density = 1.0;
-			fd.friction = 0.3;
-			fd.restitution = 0.1;
-			bodyDefP.position.set((Math.random() * 400 + 120) / physicsScale, (Math.random() * 150 + 50) / physicsScale);
-			bodyDefP.angle = Math.random() * Math.PI;
-			body = world.createBody(bodyDefP);
-			body.createFixture(fd);
-			worldBodies.push(body);
+			
+			var circDef:B2CircleShape;
+			for (i in 0...5) {
+				var bodyDefC:B2BodyDef = new B2BodyDef();
+				bodyDefC.type = 2;
+				circDef = new B2CircleShape((Math.random() * 5 + 10) / physicsScale);
+				fd = new B2FixtureDef();
+				fd.shape = circDef;
+				fd.density = 1.0;
+				
+				// Override the default friction
+				fd.friction = 0.3;
+				fd.restitution = 0.1;
+				bodyDefC.position.set((Math.random() * 400 + 120) / physicsScale, (Math.random() * 150 + 50) / physicsScale);
+				bodyDefC.angle = Math.random() * Math.PI;
+				body = world.createBody(bodyDefC);
+				body.createFixture(fd);
+				worldBodies.push(body);
+			}
+			
+			var bodyDefP:B2BodyDef;
+			for (i in 0...5) {
+				bodyDefP = new B2BodyDef();
+				bodyDefP.type = 2;
+				
+				var polyDef:B2PolygonShape = new B2PolygonShape();
+				if (Math.random() > 0.66) {
+					polyDef.setAsArray([
+						new B2Vec2((-10 -Math.random()*10) / physicsScale, ( 10 +Math.random()*10) / physicsScale),
+						new B2Vec2(( -5 -Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale),
+						new B2Vec2((  5 +Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale),
+						new B2Vec2(( 10 +Math.random() * 10) / physicsScale, ( 10 +Math.random() * 10) / physicsScale)
+						]);
+				} else if (Math.random() > 0.5) {
+					var array:Array<B2Vec2> = [];
+					array[0] = new B2Vec2(0, (10 +Math.random()*10) / physicsScale);
+					array[2] = new B2Vec2((-5 -Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale);
+					array[3] = new B2Vec2(( 5 +Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale);
+					array[1] = new B2Vec2((array[0].x + array[2].x), (array[0].y + array[2].y));
+					array[1].multiply(Math.random()/2+0.8);
+					array[4] = new B2Vec2((array[3].x + array[0].x), (array[3].y + array[0].y));
+					array[4].multiply(Math.random() / 2 + 0.8);
+					polyDef.setAsArray(array);
+				} else {
+					polyDef.setAsArray([
+						new B2Vec2(0, (10 +Math.random()*10) / physicsScale),
+						new B2Vec2((-5 -Math.random()*10) / physicsScale, (-10 -Math.random()*10) / physicsScale),
+						new B2Vec2(( 5 +Math.random() * 10) / physicsScale, ( -10 -Math.random() * 10) / physicsScale)
+					]);
+				}
+				fd = new B2FixtureDef();
+				fd.shape = polyDef;
+				fd.density = 1.0;
+				fd.friction = 0.3;
+				fd.restitution = 0.1;
+				bodyDefP.position.set((Math.random() * 400 + 120) / physicsScale, (Math.random() * 150 + 50) / physicsScale);
+				bodyDefP.angle = Math.random() * Math.PI;
+				body = world.createBody(bodyDefP);
+				body.createFixture(fd);
+				worldBodies.push(body);
+			};
 		}();
 		
 		function setupBuoyancyController() {
