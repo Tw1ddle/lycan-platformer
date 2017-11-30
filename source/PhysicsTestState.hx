@@ -1,18 +1,22 @@
 package;
 
+import box2D.collision.shapes.B2MassData;
 import box2D.dynamics.B2World;
+import flixel.FlxG;
 import flixel.FlxSprite;
-import lycan.components.entities.LSprite;
+import flixel.util.FlxColor;
 import lycan.states.LycanState;
 import lycan.world.Box2D;
 import lycan.world.components.PhysicsEntity;
-
-import box2D.collision.shapes.B2PolygonShape;
-import box2D.dynamics.B2BodyDef;
+import box2D.dynamics.B2BodyType;
 
 class PhysSprite extends FlxSprite implements PhysicsEntity {
-	public function new() {
-		super(100, 100);
+	public function new(x:Int, y:Int, width:Int = 8, height:Int = 8) {
+		super(x, y);
+		makeGraphic(width, height, FlxColor.fromRGB(128, 0, 64, 64));
+		
+		physics.init();
+		physics.setPixelPosition(x, y);
 	}
 	
 	override public function destroy():Void	super.destroy();
@@ -30,31 +34,18 @@ class PhysicsTestState extends LycanState {
 		world = Box2D.world;
 		Box2D.drawDebug = true;
 		
-		var physicsScale = 30; // TODO
+		var numSprites = 500;
+		for (i in 0...numSprites) {
+			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250));
+			testSprite.physics.body.setAngularVelocity(0);
+			testSprite.physics.body.setLinearDamping(0.1);
+			testSprite.physics.body.setAngularDamping(0.1);
+			add(testSprite);
+		}
 		
-		var s:PhysSprite = new PhysSprite();
-		//s.physics.
-		add(s);
-		
-		function addWalls() {
-			var wall:B2PolygonShape= new B2PolygonShape();
-			var wallBd:B2BodyDef = new B2BodyDef();			
-			// Left
-			wallBd.position.set(-95 / physicsScale, 360 / physicsScale / 2);
-			wall.setAsBox(100 / physicsScale, 400 / physicsScale / 2);
-			world.createBody(wallBd).createFixture2(wall);
-			// Right
-			wallBd.position.set((640 + 95) / physicsScale, 360 / physicsScale / 2);
-			world.createBody(wallBd).createFixture2(wall);
-			// Top
-			wallBd.position.set(640 / physicsScale / 2, -95 / physicsScale);
-			wall.setAsBox(680 / physicsScale/2, 100 / physicsScale);
-			world.createBody(wallBd).createFixture2(wall);
-			// Bottom
-			wallBd.position.set(640 / physicsScale / 2, (360 + 95) / physicsScale);
-			world.createBody(wallBd).createFixture2(wall);
-		}();
-		
+		var platform:PhysSprite = new PhysSprite(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
+		platform.physics.body.setType(B2BodyType.STATIC_BODY);
+		add(platform);
 	}
 	
 	override public function update(dt:Float):Void {
@@ -63,7 +54,5 @@ class PhysicsTestState extends LycanState {
 	
 	override public function draw():Void {
 		super.draw();
-		
-		//space.draw();
 	}
 }
