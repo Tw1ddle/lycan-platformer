@@ -66,7 +66,7 @@ class Box2dPhysicsState extends LycanState {
 			var dbgDraw:B2DebugDraw = new B2DebugDraw();
 			debugSprite = new Sprite();
 			dbgDraw.setSprite(debugSprite);
-			dbgDraw.setDrawScale(30.0);
+			dbgDraw.setDrawScale(physicsScale);
 			dbgDraw.setFillAlpha(0.3);
 			dbgDraw.setLineThickness(1.0);
 			dbgDraw.setFlags(B2DebugDraw.e_shapeBit | B2DebugDraw.e_jointBit);
