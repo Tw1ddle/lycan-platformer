@@ -1,27 +1,40 @@
 package;
 
 import box2D.dynamics.B2World;
+import flixel.FlxSprite;
+import lycan.components.entities.LSprite;
 import lycan.states.LycanState;
 import lycan.world.Box2D;
+import lycan.world.components.PhysicsEntity;
 
 import box2D.collision.shapes.B2PolygonShape;
 import box2D.dynamics.B2BodyDef;
 
+class PhysSprite extends FlxSprite implements PhysicsEntity {
+	public function new() {
+		super(100, 100);
+	}
+	
+	override public function destroy():Void	super.destroy();
+	override public function kill():Void	super.kill();
+	override public function revive():Void	super.revive();
+}
+
 class PhysicsTestState extends LycanState {
 	private var world:B2World;
-	
-	public function new() {
-		super();
-	}
 	
 	override public function create():Void {
 		super.create();
 		
-		var b2 = new Box2D();
-		world = b2.world;
+		Box2D.init();
+		world = Box2D.world;
 		Box2D.drawDebug = true;
 		
 		var physicsScale = 30; // TODO
+		
+		var s:PhysSprite = new PhysSprite();
+		//s.physics.
+		add(s);
 		
 		function addWalls() {
 			var wall:B2PolygonShape= new B2PolygonShape();
