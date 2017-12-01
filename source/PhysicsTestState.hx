@@ -41,6 +41,11 @@ class PhysicsTestState extends LycanState {
 		platform.physics.bodyType = B2BodyType.STATIC_BODY;
 		add(platform);
 		
+		var wall:PhysSprite = new PhysSprite(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 300), 25, 500);
+		wall.physics.addRectangularShape(wall.width, wall.height);
+		wall.physics.bodyType = B2BodyType.STATIC_BODY;
+		add(wall);
+		
 		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
 		add(player);
 	}
