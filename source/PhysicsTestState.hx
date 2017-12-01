@@ -48,6 +48,11 @@ class PhysicsTestState extends LycanState {
 		add(player);
 	}
 	
+	override public function destroy():Void {
+		Box2D.destroy();
+		super.destroy();
+	}
+	
 	override public function update(dt:Float):Void {
 		super.update(dt);
 	}

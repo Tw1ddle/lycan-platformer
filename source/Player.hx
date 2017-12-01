@@ -1,11 +1,14 @@
 package;
 
+import box2D.common.math.B2Vec2;
+import box2D.dynamics.B2Fixture;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
 import lycan.world.components.Groundable;
 import lycan.world.components.PhysicsEntity;
+import box2D.dynamics.B2FilterData;
 
 class Player extends FlxSprite implements PhysicsEntity implements Groundable {
 	public function new(x:Int, y:Int, width:Int, height:Int) {
@@ -13,7 +16,12 @@ class Player extends FlxSprite implements PhysicsEntity implements Groundable {
 		makeGraphic(width, height, FlxColor.fromRGB(255, 255, 0, 180));
 
 		physics.init();
-		physics.addRectangularShape(width, height, 50);
+		physics.fixedRotation = true;
+		physics.sleepingAllowed = false;
+		physics.addRectangularShapeAdv(width, height, 0, 0, 50, new B2FilterData(), 10, false, 0, this);
+		
+		// Sensor for checking if grounded
+		var groundedSensor = physics.addCircleShapeAdv(10, 0, height / 2, 50, new B2FilterData(), 10, true, 0, this);
 	}
 	
 	override public function destroy():Void	super.destroy();
