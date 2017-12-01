@@ -40,8 +40,14 @@ class Player extends FlxSprite implements PhysicsEntity implements Groundable {
 		}
 		
 		if (FlxG.keys.anyJustPressed([FlxKey.W, FlxKey.UP])) {
-			physics.linearVelocityY = -2;
+			
+			if (groundable.isGrounded) {
+				physics.linearVelocityY = -2;
+			}
+			
 		}
+		
+		// TODO double jumps + not hanging on walls
 		
 		if (groundable.isGrounded) {
 			trace(groundable.isGrounded); // (actually before it updates, since it's appended)
