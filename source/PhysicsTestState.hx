@@ -1,23 +1,19 @@
 package;
 
-import box2D.collision.shapes.B2MassData;
-import box2D.dynamics.B2Fixture;
-import box2D.dynamics.B2World;
+import box2D.dynamics.B2BodyType;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import lycan.states.LycanState;
 import lycan.world.Box2D;
 import lycan.world.components.PhysicsEntity;
-import box2D.dynamics.B2BodyType;
 
 class PhysSprite extends FlxSprite implements PhysicsEntity {
-	public function new(x:Int, y:Int, width:Int = 8, height:Int = 8) {
+	public function new(x:Int, y:Int, width:Int, height:Int) {
 		super(x, y);
-		makeGraphic(width, height, FlxColor.fromRGB(128, 0, 64, 64));
+		makeGraphic(width, height, FlxColor.fromRGB(255, 0, 64, 128));
 		
-		physics.init();
-		physics.setPixelPosition(x, y);
+	    physics.init();
 	}
 	
 	override public function destroy():Void	super.destroy();
@@ -26,35 +22,30 @@ class PhysSprite extends FlxSprite implements PhysicsEntity {
 }
 
 class PhysicsTestState extends LycanState {
-	private var world:B2World;
-	
 	override public function create():Void {
 		super.create();
 		
 		Box2D.init();
-		world = Box2D.world;
 		Box2D.drawDebug = true;
 		
-		var numSprites = 500;
+		var numSprites = 100;
 		for (i in 0...numSprites) {
-			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250));
-			testSprite.physics.body.setAngularVelocity(0);
-			testSprite.physics.body.setLinearDamping(0.1);
-			testSprite.physics.body.setAngularDamping(0.1);
-		
-			// Forcibly set density/mass of the fixtures/body
-			var fixtures:B2Fixture = testSprite.physics.body.getFixtureList();
-
-				fixtures.setDensity(10);
-
-			testSprite.physics.body.resetMassData();
-			
+			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250), Std.int(4 + Math.random() * 24), Std.int(4 + Math.random() * 24));
+			testSprite.physics.addRectangularShape(testSprite.width, testSprite.height, 10);
+			testSprite.physics.linearVelocityX = 3;
+			testSprite.physics.linearDamping = 0.1;
+			testSprite.physics.angularVelocity = 12;
+			testSprite.physics.angularDamping = 0.1;
 			add(testSprite);
 		}
 		
 		var platform:PhysSprite = new PhysSprite(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
-		platform.physics.body.setType(B2BodyType.STATIC_BODY);
+		platform.physics.addRectangularShape(platform.width, platform.height);
+		platform.physics.bodyType = B2BodyType.STATIC_BODY;
 		add(platform);
+		
+		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
+		add(player);
 	}
 	
 	override public function update(dt:Float):Void {
