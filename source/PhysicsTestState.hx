@@ -4,16 +4,18 @@ import box2D.dynamics.B2BodyType;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
+import lycan.components.entities.LSprite;
 import lycan.states.LycanState;
 import lycan.world.Box2D;
 import lycan.world.components.PhysicsEntity;
 
-class PhysSprite extends FlxSprite implements PhysicsEntity {
+class PhysSprite extends LSprite implements PhysicsEntity {
 	public function new(x:Int, y:Int, width:Int, height:Int) {
 		super(x, y);
 		makeGraphic(width, height, FlxColor.fromRGB(255, 0, 64, 128));
 		
 	    physics.init();
+		
 	}
 
 }

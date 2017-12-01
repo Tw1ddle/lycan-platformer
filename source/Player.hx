@@ -24,10 +24,6 @@ class Player extends FlxSprite implements PhysicsEntity implements Groundable {
 		var groundedSensor = physics.addCircleShapeAdv(10, 0, height / 2, 50, new B2FilterData(), 10, true, 0, this);
 	}
 	
-	override public function destroy():Void	super.destroy();
-	override public function kill():Void	super.kill();
-	override public function revive():Void	super.revive();
-	
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
