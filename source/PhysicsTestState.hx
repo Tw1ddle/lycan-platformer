@@ -18,10 +18,7 @@ class PhysSprite extends FlxSprite implements PhysicsEntity {
 		physics.init();
 		physics.setPixelPosition(x, y);
 	}
-	
-	override public function destroy():Void	super.destroy();
-	override public function kill():Void	super.kill();
-	override public function revive():Void	super.revive();
+
 }
 
 class PhysicsTestState extends LycanState {
@@ -32,14 +29,15 @@ class PhysicsTestState extends LycanState {
 		
 		Box2D.init();
 		world = Box2D.world;
-		Box2D.drawDebug = true;
+		//Box2D.drawDebug = true;
 		
-		var numSprites = 500;
+		var numSprites = 100;
 		for (i in 0...numSprites) {
 			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250));
+			testSprite.physics.body.setFixedRotation(false);
 			testSprite.physics.body.setAngularVelocity(0);
-			testSprite.physics.body.setLinearDamping(0.1);
-			testSprite.physics.body.setAngularDamping(0.1);
+			testSprite.physics.body.setLinearDamping(0);
+			testSprite.physics.body.setAngularDamping(0);
 			add(testSprite);
 		}
 		
