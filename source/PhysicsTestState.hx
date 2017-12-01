@@ -1,6 +1,7 @@
 package;
 
 import box2D.collision.shapes.B2MassData;
+import box2D.dynamics.B2Fixture;
 import box2D.dynamics.B2World;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -40,6 +41,14 @@ class PhysicsTestState extends LycanState {
 			testSprite.physics.body.setAngularVelocity(0);
 			testSprite.physics.body.setLinearDamping(0.1);
 			testSprite.physics.body.setAngularDamping(0.1);
+		
+			// Forcibly set density/mass of the fixtures/body
+			var fixtures:B2Fixture = testSprite.physics.body.getFixtureList();
+
+				fixtures.setDensity(10);
+
+			testSprite.physics.body.resetMassData();
+			
 			add(testSprite);
 		}
 		
