@@ -8,6 +8,7 @@ class RootState extends LycanRootState {
 	public function new() {
 		super();
 		persistentUpdate = true;
+		destroySubStates = true;
 	}
 	
 	override public function create():Void {
