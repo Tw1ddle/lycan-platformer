@@ -26,6 +26,7 @@ class PhysicsTestState extends LycanState {
 		
 		Box2D.init();
 		Box2D.drawDebug = true;
+		Box2D.debugManipulator = new Box2DInteractiveDebug();
 		
 		var numSprites = 100;
 		for (i in 0...numSprites) {
