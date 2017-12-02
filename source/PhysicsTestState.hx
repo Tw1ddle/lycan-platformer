@@ -51,6 +51,8 @@ class PhysicsTestState extends LycanState {
 		
 		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
 		add(player);
+		
+		FlxG.camera.follow(player, null, 0.9);
 	}
 	
 	override public function destroy():Void {
