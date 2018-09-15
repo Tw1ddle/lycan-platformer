@@ -27,8 +27,10 @@ class RootState extends LycanRootState {
 	
 	private function openPlaystate():Void {
 		closeSubState();
-		
-		openSubState(new Box2dPhysicsState());
+
+		//openSubState(new Box2dPhysicsState());
 		//openSubState(new AutotilingState());
+		
+		openSubState(new PhysicsTestState());
 	}
 }

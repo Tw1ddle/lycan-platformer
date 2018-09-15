@@ -11,8 +11,4 @@ class Main extends Sprite {
 		
 		addChild(new FlxGame(1024, 768, RootState, 1, 60, 60, true, false));
 	}
-	
-	public function add(a:Float, b:Float):Float {
-		return a + b + 1;
-	}
 }
