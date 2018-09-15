@@ -4,9 +4,9 @@ import box2D.dynamics.B2BodyType;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
-import lycan.components.entities.LSprite;
+import lycan.entities.LSprite;
 import lycan.states.LycanState;
-import lycan.world.Box2D;
+import lycan.phys.Phys;
 import lycan.world.components.PhysicsEntity;
 
 class PhysSprite extends LSprite implements PhysicsEntity {
@@ -14,8 +14,7 @@ class PhysSprite extends LSprite implements PhysicsEntity {
 		super(x, y);
 		makeGraphic(width, height, FlxColor.fromRGB(255, 0, 64, 128));
 		
-	    physics.init();
-		
+		physics.init();
 	}
 
 }
@@ -24,9 +23,9 @@ class PhysicsTestState extends LycanState {
 	override public function create():Void {
 		super.create();
 		
-		Box2D.init();
-		Box2D.drawDebug = true;
-		Box2D.debugManipulator = new Box2DInteractiveDebug();
+		Phys.init();
+		Phys.drawDebug = true;
+		Phys.debugManipulator = new Box2DInteractiveDebug();
 		
 		var numSprites = 100;
 		for (i in 0...numSprites) {
@@ -56,7 +55,7 @@ class PhysicsTestState extends LycanState {
 	}
 	
 	override public function destroy():Void {
-		Box2D.destroy();
+		Phys.destroy();
 		super.destroy();
 	}
 	
