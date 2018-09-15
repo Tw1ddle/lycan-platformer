@@ -27,29 +27,19 @@ class PhysicsTestState extends LycanState {
 		Phys.drawDebug = true;
 		Phys.debugManipulator = new Box2DInteractiveDebug();
 		
-		var numSprites = 100;
-		for (i in 0...numSprites) {
-			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250), Std.int(4 + Math.random() * 24), Std.int(4 + Math.random() * 24));
-			testSprite.physics.addRectangularShape(testSprite.width, testSprite.height, 10);
-			testSprite.physics.linearVelocityX = 3;
-			testSprite.physics.linearDamping = 0.1;
-			testSprite.physics.angularVelocity = 12;
-			testSprite.physics.angularDamping = 0.1;
-			add(testSprite);
-		}
+		addRandomFlyingBoxes();
 		
-		var platform:PhysSprite = new PhysSprite(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
-		platform.physics.addRectangularShape(platform.width, platform.height);
-		platform.physics.bodyType = B2BodyType.STATIC_BODY;
-		add(platform);
+		addStaticPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
 		
-		addMovingPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 100), Std.int(FlxG.width / 3), 25);
+		addMovingPlatform(Std.int(FlxG.width / 2 + 500), Std.int(FlxG.height + 200), Std.int(FlxG.width / 3), 25);
 		
 		addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
 		
-		addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
+		addGround(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 200), 100, 100, 50, 25, 25);
 		
-		addWall(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 300), 25, 500);
+		addGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
+		
+		addWall(Std.int(FlxG.width / 2 - 300), Std.int(FlxG.height - 500), 25, 100);
 		
 		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
 		add(player);
@@ -70,6 +60,36 @@ class PhysicsTestState extends LycanState {
 		super.draw();
 	}
 	
+	private function addRandomFlyingBoxes():Void {
+		var numSprites = 25;
+		for (i in 0...numSprites) {
+			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250), Std.int(4 + Math.random() * 24), Std.int(4 + Math.random() * 24));
+			testSprite.physics.addRectangularShape(testSprite.width, testSprite.height, 10);
+			testSprite.physics.linearVelocityX = 3;
+			testSprite.physics.linearDamping = 0.1;
+			testSprite.physics.angularVelocity = 12;
+			testSprite.physics.angularDamping = 0.1;
+			add(testSprite);
+		}
+	}
+	
+	private function addStaticPlatform(x:Int, y:Int, width:Int, height:Int):Void {
+		var platform:PhysSprite = new PhysSprite(x, y, width, height);
+		platform.physics.addRectangularShape(platform.width, platform.height);
+		platform.physics.bodyType = B2BodyType.STATIC_BODY;
+		add(platform);
+	}
+	
+	private function addMovingPlatform(x:Int, y:Int, width:Int, height:Int):Void {
+		var wall = addWall(x, y, width, height, B2BodyType.KINEMATIC_BODY);
+		wall.physics.linearVelocityX = 5;
+		
+		// Move back and forth
+		new FlxTimer().start(3, function(t:FlxTimer):Void {
+			wall.physics.linearVelocityX = -wall.physics.linearVelocityX;
+		}, 0);
+	}
+	
 	private function addWall(x:Int, y:Int, width:Int, height:Int, bodyType:B2BodyType = B2BodyType.STATIC_BODY):PhysSprite {
 		var wall:PhysSprite = new PhysSprite(x, y, width, height);
 		wall.physics.addRectangularShape(wall.width, wall.height);
@@ -87,14 +107,5 @@ class PhysicsTestState extends LycanState {
 			wall.physics.bodyType = B2BodyType.STATIC_BODY;
 			add(wall);
 		}
-	}
-	
-	private function addMovingPlatform(x:Int, y:Int, width:Int, height:Int):Void {
-		var wall = addWall(x, y, width, height, B2BodyType.KINEMATIC_BODY);
-		wall.physics.linearVelocityX = 5;
-		
-		new FlxTimer().start(3, function(t:FlxTimer):Void {
-			wall.physics.linearVelocityX = -wall.physics.linearVelocityX;
-		}, 0);
 	}
 }
