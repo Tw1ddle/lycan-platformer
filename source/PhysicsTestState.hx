@@ -45,7 +45,9 @@ class PhysicsTestState extends LycanState {
 		
 		addMovingPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 100), Std.int(FlxG.width / 3), 25);
 		
-		addNobblyGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50);
+		addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
+		
+		addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
 		
 		addWall(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 300), 25, 500);
 		
@@ -76,9 +78,11 @@ class PhysicsTestState extends LycanState {
 		return wall;
 	}
 	
-	private function addNobblyGround(x:Int, y:Int, width:Int, height:Int, parts:Int):Void {
+	private function addGround(x:Int, y:Int, width:Int, height:Int, parts:Int, nobblyYPositionVariation:Int = 0, nobblyHeightVariation:Int = 0):Void {
 		for (i in 0...parts) {
-			var wall:PhysSprite = new PhysSprite(x +  width * i, y + FlxG.random.int(5, -5), width, height + FlxG.random.int(-5, 5));
+			var wall:PhysSprite = new PhysSprite(x +  width * i, y + FlxG.random.int( -nobblyYPositionVariation, nobblyYPositionVariation),
+			width, height + FlxG.random.int( -nobblyHeightVariation, nobblyHeightVariation));
+			
 			wall.physics.addRectangularShape(wall.width, wall.height);
 			wall.physics.bodyType = B2BodyType.STATIC_BODY;
 			add(wall);
