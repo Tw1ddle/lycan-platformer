@@ -2,11 +2,10 @@ package;
 
 import box2D.dynamics.B2BodyType;
 import flixel.FlxG;
-import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import lycan.entities.LSprite;
-import lycan.states.LycanState;
 import lycan.phys.Phys;
+import lycan.states.LycanState;
 import lycan.world.components.PhysicsEntity;
 
 class PhysSprite extends LSprite implements PhysicsEntity {
@@ -43,10 +42,9 @@ class PhysicsTestState extends LycanState {
 		platform.physics.bodyType = B2BodyType.STATIC_BODY;
 		add(platform);
 		
-		var wall:PhysSprite = new PhysSprite(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 300), 25, 500);
-		wall.physics.addRectangularShape(wall.width, wall.height);
-		wall.physics.bodyType = B2BodyType.STATIC_BODY;
-		add(wall);
+		addNobblyGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50);
+		
+		addWall(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 300), 25, 500);
 		
 		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
 		add(player);
@@ -65,5 +63,21 @@ class PhysicsTestState extends LycanState {
 	
 	override public function draw():Void {
 		super.draw();
+	}
+	
+	private function addWall(x:Int, y:Int, width:Int, height:Int):Void {
+		var wall:PhysSprite = new PhysSprite(x, y, width, height);
+		wall.physics.addRectangularShape(wall.width, wall.height);
+		wall.physics.bodyType = B2BodyType.STATIC_BODY;
+		add(wall);
+	}
+	
+	private function addNobblyGround(x:Int, y:Int, width:Int, height:Int, parts:Int):Void {
+		for (i in 0...parts) {
+			var wall:PhysSprite = new PhysSprite(x +  width * i, y + FlxG.random.int(5, -5), width, height + FlxG.random.int(-5, 5));
+			wall.physics.addRectangularShape(wall.width, wall.height);
+			wall.physics.bodyType = B2BodyType.STATIC_BODY;
+			add(wall);
+		}
 	}
 }
