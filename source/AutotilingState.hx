@@ -5,6 +5,7 @@ import lycan.states.LycanRootState;
 import lycan.states.LycanState;
 import flixel.FlxG;
 import flixel.FlxBasic;
+import lycan.util.Spring;
 
 class AutotilingState extends LycanState {
 	public var s:FlxSprite;
