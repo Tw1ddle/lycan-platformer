@@ -6,6 +6,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
+import lycan.util.GraphicUtil;
 import lycan.world.components.Groundable;
 import lycan.world.components.PhysicsEntity;
 import box2D.dynamics.B2FilterData;
@@ -14,7 +15,15 @@ class Player extends FlxSprite implements PhysicsEntity implements Groundable {
 	public function new(x:Int, y:Int, width:Int, height:Int) {
 		super(x, y);
 		makeGraphic(width, height, FlxColor.fromRGB(255, 255, 0, 180));
-
+		
+		GraphicUtil.makePlaceholderGraphic(this, "player", width, height, [
+			{name: "idle", frameCount: 4},
+			{name: "run", frameCount: 8},
+			{name: "jumpUp", frameCount: 1},
+			{name: "zeroG", frameCount: 1},
+			{name: "fall", frameCount: 1}
+		]);
+		
 		physics.init();
 		physics.fixedRotation = true;
 		physics.sleepingAllowed = false;
