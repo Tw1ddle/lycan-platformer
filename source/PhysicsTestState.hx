@@ -17,7 +17,6 @@ class PhysSprite extends LSprite implements PhysicsEntity {
 		
 		physics.init();
 	}
-
 }
 
 class PhysicsTestState extends LycanState {
@@ -55,6 +54,14 @@ class PhysicsTestState extends LycanState {
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
+		
+		if (FlxG.keys.justPressed.Y) {
+			var body = Phys.debugManipulator.getBodyAtMouse();
+			if (body != null) {
+				FlxG.watch.add(body.m_linearVelocity, "x", "linearVelocityX");
+				FlxG.watch.add(body.m_linearVelocity, "y", "linearVelocityY");
+			}
+		}
 	}
 	
 	override public function draw():Void {
