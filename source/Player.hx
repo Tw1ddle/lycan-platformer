@@ -36,12 +36,12 @@ class Player extends FlxSprite implements PhysicsEntity implements Groundable {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
-		var runSpeed = 600 * dt;
+		var runSpeed = 200;
 		
 		if (FlxG.keys.anyPressed([FlxKey.A, FlxKey.LEFT])) {
-		    physics.linearVelocityX = -runSpeed;
+			physics.applyImpulse(-runSpeed, 0);
 		} else if (FlxG.keys.anyPressed([FlxKey.D, FlxKey.RIGHT])) {
-			physics.linearVelocityX = runSpeed;
+			physics.applyImpulse(runSpeed, 0);
 		}
 		
 		if (FlxG.keys.anyJustPressed([FlxKey.W, FlxKey.UP])) {

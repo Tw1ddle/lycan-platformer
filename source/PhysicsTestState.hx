@@ -1,6 +1,7 @@
 package;
 
 import box2D.dynamics.B2BodyType;
+import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
@@ -44,7 +45,7 @@ class PhysicsTestState extends LycanState {
 		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
 		add(player);
 		
-		FlxG.camera.follow(player, null, 0.9);
+		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
 	}
 	
 	override public function destroy():Void {
