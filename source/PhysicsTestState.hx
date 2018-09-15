@@ -3,6 +3,7 @@ package;
 import box2D.dynamics.B2BodyType;
 import flixel.FlxG;
 import flixel.util.FlxColor;
+import flixel.util.FlxTimer;
 import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
@@ -42,6 +43,8 @@ class PhysicsTestState extends LycanState {
 		platform.physics.bodyType = B2BodyType.STATIC_BODY;
 		add(platform);
 		
+		addMovingPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 100), Std.int(FlxG.width / 3), 25);
+		
 		addNobblyGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50);
 		
 		addWall(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 300), 25, 500);
@@ -65,11 +68,12 @@ class PhysicsTestState extends LycanState {
 		super.draw();
 	}
 	
-	private function addWall(x:Int, y:Int, width:Int, height:Int):Void {
+	private function addWall(x:Int, y:Int, width:Int, height:Int, bodyType:B2BodyType = B2BodyType.STATIC_BODY):PhysSprite {
 		var wall:PhysSprite = new PhysSprite(x, y, width, height);
 		wall.physics.addRectangularShape(wall.width, wall.height);
-		wall.physics.bodyType = B2BodyType.STATIC_BODY;
+		wall.physics.bodyType = bodyType;
 		add(wall);
+		return wall;
 	}
 	
 	private function addNobblyGround(x:Int, y:Int, width:Int, height:Int, parts:Int):Void {
@@ -79,5 +83,14 @@ class PhysicsTestState extends LycanState {
 			wall.physics.bodyType = B2BodyType.STATIC_BODY;
 			add(wall);
 		}
+	}
+	
+	private function addMovingPlatform(x:Int, y:Int, width:Int, height:Int):Void {
+		var wall = addWall(x, y, width, height, B2BodyType.KINEMATIC_BODY);
+		wall.physics.linearVelocityX = 5;
+		
+		new FlxTimer().start(3, function(t:FlxTimer):Void {
+			wall.physics.linearVelocityX = -wall.physics.linearVelocityX;
+		}, 0);
 	}
 }
