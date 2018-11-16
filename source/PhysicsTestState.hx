@@ -60,7 +60,7 @@ class PhysicsTestState extends LycanState {
 		
 		lightning = new Lightning(0.4);
 		lightning.displaceTime.set(0.7, 1.2);
-		lightning.detail = 0.25;	
+		lightning.detail = 0.25;
 		lightning.regenerateDistance = 30;
 		lightning.thickness = 4;
 		lightning.lightningType = LightningType.CONTINUOUS;
@@ -124,7 +124,6 @@ class PhysicsTestState extends LycanState {
 		addRandomFlyingBoxes();
 		
 		addStaticPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
-		addMovingPlatform(Std.int(FlxG.width / 2 + 500), Std.int(FlxG.height + 200), Std.int(FlxG.width / 3), 25);
 		addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
 		addGround(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 200), 100, 100, 50, 25, 25);
 		addGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
@@ -177,7 +176,7 @@ class PhysicsTestState extends LycanState {
 		
 		//AL.sourcei(handle, AL.DIRECT_FILTER, fx);
 		//AL.sourcei(handle, AL.DIRECT_FILTER, fx2);
-		//AL.source3i(handle, AL.EFF, aux, 0, AL.FILTER_NULL); 
+		//AL.source3i(handle, AL.EFF, aux, 0, AL.FILTER_NULL);
 	}
 	
 	override public function draw():Void {
@@ -202,16 +201,6 @@ class PhysicsTestState extends LycanState {
 		platform.physics.addRectangularShape(platform.width, platform.height);
 		platform.physics.bodyType = B2BodyType.STATIC_BODY;
 		add(platform);
-	}
-	
-	private function addMovingPlatform(x:Int, y:Int, width:Int, height:Int):Void {
-		var wall = addWall(x, y, width, height, B2BodyType.KINEMATIC_BODY);
-		wall.physics.linearVelocityX = 5;
-		
-		// Move back and forth
-		new FlxTimer().start(3, function(t:FlxTimer):Void {
-			wall.physics.linearVelocityX = -wall.physics.linearVelocityX;
-		}, 0);
 	}
 	
 	private function addWall(x:Int, y:Int, width:Int, height:Int, bodyType:B2BodyType = B2BodyType.STATIC_BODY):PhysSprite {
