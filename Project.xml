@@ -21,6 +21,10 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
 	<assets path="assets" />
+	<assets path="assets/music" include="*.mp3" if="flash" />
+	<assets path="assets/music" include="*.ogg|*.wav" unless="flash" />
+	<assets path="assets/sounds" include="*.mp3" if="flash" />
+	<assets path="assets/sounds" include="*.ogg|*.wav" unless="flash" />
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
@@ -33,6 +37,7 @@
 	<haxelib name="tink_lang" />
 	<haxelib name="tink_macro" />
 	<haxelib name="lycan" />
+	<haxelib name="flixel-ui" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

@@ -6,12 +6,13 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
+import lycan.entities.LSprite;
 import lycan.util.GraphicUtil;
 import lycan.world.components.Groundable;
 import lycan.world.components.PhysicsEntity;
 import box2D.dynamics.B2FilterData;
 
-class Player extends FlxSprite implements PhysicsEntity implements Groundable {
+class Player extends LSprite implements PhysicsEntity implements Groundable {
 	public function new(x:Int, y:Int, width:Int, height:Int) {
 		super(x, y);
 		makeGraphic(width, height, FlxColor.fromRGB(255, 255, 0, 180));
