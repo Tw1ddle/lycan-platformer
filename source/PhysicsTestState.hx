@@ -56,7 +56,10 @@ class PhysicsTestState extends LycanState {
 		lightningZone = new CameraLightningZone(FlxG.width, FlxG.height);
 		var cam:CameraAttachableComponent = cast lightningZone.cameraAttachable;
 		cam.camera = FlxG.camera;
-		//FlxG.camera.pixelPerfectRender = false;
+		
+		
+		FlxG.camera.pixelPerfectRender = false;
+		
 		
 		lightning = new Lightning(0.4);
 		lightning.displaceTime.set(0.7, 1.2);
@@ -119,15 +122,15 @@ class PhysicsTestState extends LycanState {
 		//Phys.debugRenderer.setDrawScale(100);
 		Phys.world.getGravity().set(0, 30);
 		//Phys.world.setGravity(Phys.world.getGravity());
-		Phys.pixelsPerMeter = 50;
+		Phys.pixelsPerMeter = 10;
 		
-		addRandomFlyingBoxes();
+		//addRandomFlyingBoxes();
 		
 		addStaticPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
-		addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
-		addGround(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 200), 100, 100, 50, 25, 25);
-		addGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
-		addWall(Std.int(FlxG.width / 2 - 300), Std.int(FlxG.height - 500), 25, 100);
+		//addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
+		//addGround(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 200), 100, 100, 50, 25, 25);
+		//addGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
+	    Phys.createWalls(FlxG.worldBounds.left, FlxG.worldBounds.top, FlxG.worldBounds.right, FlxG.worldBounds.bottom, 50);
 		
 		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
 		add(player);
