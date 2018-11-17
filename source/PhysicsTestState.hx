@@ -21,6 +21,7 @@ import lycan.effects.LightningZone;
 import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
+import lycan.system.FpsText;
 import lycan.world.components.PhysicsEntity;
 import openfl.Assets;
 import openfl.media.Sound;
@@ -51,7 +52,8 @@ class PhysicsTestState extends LycanState {
 	var lightning:Lightning;
 	override public function create():Void {
 		super.create();
-		uiGroup.add(new FlxUISlider(this, "freq", 0, 0, 0, 1, 200, 15, 3, 0xffffffff));
+		//uiGroup.add(new FlxUISlider(this, "freq", 0, 0, 0, 1, 200, 15, 3, 0xffffffff));
+		uiGroup.add(new FpsText(0, 0, 24));
 		
 		lightningZone = new CameraLightningZone(FlxG.width, FlxG.height);
 		var cam:CameraAttachableComponent = cast lightningZone.cameraAttachable;
@@ -124,7 +126,7 @@ class PhysicsTestState extends LycanState {
 		//Phys.world.setGravity(Phys.world.getGravity());
 		Phys.pixelsPerMeter = 10;
 		
-		//addRandomFlyingBoxes();
+		addRandomFlyingBoxes();
 		
 		addStaticPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
 		//addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
@@ -189,7 +191,7 @@ class PhysicsTestState extends LycanState {
 	private function addRandomFlyingBoxes():Void {
 		var numSprites = 25;
 		for (i in 0...numSprites) {
-			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250), Std.int(4 + Math.random() * 24), Std.int(4 + Math.random() * 24));
+			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250), Std.int(12 + Math.random() * 24), Std.int(12 + Math.random() * 24));
 			testSprite.physics.addRectangularShape(testSprite.width, testSprite.height, 10);
 			testSprite.physics.linearVelocityX = 3;
 			testSprite.physics.linearDamping = 0.1;
