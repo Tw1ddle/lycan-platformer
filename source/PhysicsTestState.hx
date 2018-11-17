@@ -122,19 +122,16 @@ class PhysicsTestState extends LycanState {
 		Phys.drawDebug = true;
 		Phys.debugManipulator = new Box2DInteractiveDebug();
 		//Phys.debugRenderer.setDrawScale(100);
-		Phys.world.getGravity().set(0, 30);
-		//Phys.world.setGravity(Phys.world.getGravity());
-		Phys.pixelsPerMeter = 10;
 		
 		addRandomFlyingBoxes();
 		
-		addStaticPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
+		//addStaticPlatform(Std.int(FlxG.width / 2 - 200), Std.int(FlxG.height - 200), Std.int(FlxG.width / 2), 25);
 		//addGround(Std.int(FlxG.width / 2 - 980), Std.int(FlxG.height - 200), 10, 10, 50, 5, 5);
 		//addGround(Std.int(FlxG.width / 2 + 200), Std.int(FlxG.height - 200), 100, 100, 50, 25, 25);
-		//addGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
-	    Phys.createWalls(FlxG.worldBounds.left, FlxG.worldBounds.top, FlxG.worldBounds.right, FlxG.worldBounds.bottom, 50);
+		addGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
+		Phys.createWalls(FlxG.worldBounds.left, FlxG.worldBounds.top, FlxG.worldBounds.right, FlxG.worldBounds.bottom, 50);
 		
-		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 40, 120);
+		var player:Player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 30, 100);
 		add(player);
 		
 		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
