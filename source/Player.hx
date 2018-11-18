@@ -38,14 +38,12 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
-		var runSpeed = 2000;
-		var physics:PhysicsComponent = physics;
-		physics.set_linearDamping(0);
+		var runImpulse = 10;
 		
 		if (FlxG.keys.anyPressed([FlxKey.A, FlxKey.LEFT])) {
-			physics.applyImpulse(-runSpeed, 0);
+			physics.applyImpulse(-runImpulse, 0);
 		} else if (FlxG.keys.anyPressed([FlxKey.D, FlxKey.RIGHT])) {
-			physics.applyImpulse(runSpeed, 0);
+			physics.applyImpulse(runImpulse, 0);
 		}
 		
 		
