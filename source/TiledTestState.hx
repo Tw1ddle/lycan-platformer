@@ -1,13 +1,12 @@
 package;
 
+import flixel.addons.editors.tiled.TiledObjectLayer;
+import lycan.world.ObjectLoaderRules;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.addons.editors.tiled.TiledObject;
 import lycan.world.layer.ObjectLayer;
-import lycan.world.layer.ObjectLayer.ObjectLoader;
-import haxe.ds.StringMap;
 import lycan.world.layer.TileLayer;
 import lycan.world.World;
-import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
@@ -107,27 +106,31 @@ class TiledTestState extends LycanState {
 
 	private function loadWorld():Void {
 		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
-		var loader:StringMap<ObjectLoader> = new StringMap<ObjectLoader>();
+		var loader = new ObjectLoaderRules();
+
+		var matchType = function(type:String, obj:TiledObject, layer:TiledObjectLayer) {
+			return obj.type == type;
+		};
 		
-		loader.set("player", function(obj:TiledObject, layer:ObjectLayer) {
+		loader.addHandler(matchType.bind("player"), function(obj:TiledObject, layer:ObjectLayer) {
 			player.setPosition(obj.x, obj.y + obj.height - player.height / 2);
 			return player;
 		});
-		loader.set("crate", function(obj:TiledObject, layer:ObjectLayer) {
+		loader.addHandler(matchType.bind("crate"), function(obj:TiledObject, layer:ObjectLayer) {
 			var crate:PhysSprite = new PhysSprite(obj.x, obj.y, 50, 50);
 			crateGroup.add(crate);
 			return crate;
 		});
-		loader.set("movingPlatform", function(obj:TiledObject, layer:ObjectLayer) {
+		loader.addHandler(matchType.bind("movingPlatform"), function(obj:TiledObject, layer:ObjectLayer) {
 			return null;
 		});
-		loader.set("switch", function(obj:TiledObject, layer:ObjectLayer) {
+		loader.addHandler(matchType.bind("switch"), function(obj:TiledObject, layer:ObjectLayer) {
 			return null; //TODO
 		});
-		loader.set("button", function(obj:TiledObject, layer:ObjectLayer) {
+		loader.addHandler(matchType.bind("button"), function(obj:TiledObject, layer:ObjectLayer) {
 			return null; //TODO
 		});
-		loader.set("oneway", function(obj:TiledObject, layer:ObjectLayer) {
+		loader.addHandler(matchType.bind("oneway"), function(obj:TiledObject, layer:ObjectLayer) {
 			var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
 			onewayGroup.add(oneway);
 			return oneway;
