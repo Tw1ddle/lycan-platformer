@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="120" height="55" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="108">
+ <tileset firstgid="1" name="Collision" tilewidth="16" tileheight="16" tilecount="2" columns="2">
+  <image source="../images/collisions.png" width="32" height="16"/>
+ </tileset>
+ <layer id="4" name="Collisions" width="120" height="55" opacity="0.26">
+  <properties>
+   <property name="collision" value=""/>
+   <property name="hide" value=""/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztlu1qwzAMRbv3f+kxRmGMJLXs+yHZOuBfba0rHcfN69U0jYOvgdXsyQmOR843e7nIkIGN261rtu76TNw+3Z4znC8mbo9uz+56zLpud07HWbxW7jHSj6N3JY7/AUfNJ5Rn3OlXXa/98lHP2PU+88TuftX1RmeoOgtqv+r3KzXtd2+/f2vP+I0sxL5ITvI7Qvtdr5cZxYxVbq9qsznR79X+Dr8K2i/Pr/LcPGXIimIe7VfDVe+OeSDqqu/8T1mePkO9s47kyOJ3BbfP/yD9rua42ifDjCJkcvtD+10nwz18x6ccaLezdz6q3my20e9mYyQT8pnN6Hem3k5+0fWYflH7s8+diva7p9c3zmyMOc3cqTt6fdN+9/dbISeDiKvqfqvkRTLTe8V5VX73WMmy6hcFe27tN5YT0Zd6blUdO3Ks7OWaF9svq58qfqs9B1k8O+6T6B5ut5EM2fzOZl9hdA+302iWXf1GPovkzuJ2JAvaH+N5Qvid3TuaS03m55OR/e73M/tHczlgOkH3hj5TLFdZ3N5lab/4nE4UfaL3y/z/cYpfBEynzL7b7xiV/CrPTwTVDDMvBO235kLM0Yl7ficsJ+7eT1hu3P3vvppf3B7aLxe3h3bMxe2g/XJxO8jm+BuyYQh6
+  </data>
+ </layer>
+ <objectgroup id="9" name="Objects">
+  <object id="52" name="player" type="player" x="1424" y="572" width="16" height="32">
+   <properties>
+    <property name="upgrade" value=""/>
+   </properties>
+  </object>
+  <object id="53" type="turret" x="928" y="656" width="16" height="16">
+   <properties>
+    <property name="delay" value="2"/>
+    <property name="mountSide" value="right"/>
+   </properties>
+  </object>
+  <object id="54" type="crate" x="1056" y="192" width="16" height="16">
+   <properties>
+    <property name="upgrade" value="speed++"/>
+   </properties>
+  </object>
+  <object id="55" type="turret" x="496" y="400" width="16" height="16">
+   <properties>
+    <property name="delay" value="0.6"/>
+    <property name="mountSide" value="top"/>
+   </properties>
+  </object>
+  <object id="56" type="turret" x="432" y="496" width="16" height="16">
+   <properties>
+    <property name="facing" value="right"/>
+   </properties>
+  </object>
+  <object id="57" type="crate" x="496" y="304" width="16" height="16">
+   <properties>
+    <property name="upgrade" value="double jump"/>
+   </properties>
+  </object>
+  <object id="58" type="goal" x="1640" y="372" width="64" height="108"/>
+  <object id="59" type="turret" x="1144" y="448" width="16" height="16">
+   <properties>
+    <property name="facing" value="left"/>
+    <property name="gunAngle" value="180"/>
+    <property name="mountSide" value="top"/>
+   </properties>
+  </object>
+  <object id="60" type="turret" x="1200" y="480" width="16" height="16">
+   <properties>
+    <property name="burst" value="1.2"/>
+    <property name="burstCooldown" value="3"/>
+    <property name="cooldown" value="0.15"/>
+    <property name="mountSide" value="top"/>
+    <property name="range" value="300"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="61" type="turret" x="1088" y="256" width="16" height="16">
+   <properties>
+    <property name="facing" value="right"/>
+    <property name="gunAngle" value="180"/>
+    <property name="mountSide" value="top"/>
+   </properties>
+  </object>
+  <object id="63" type="crate" x="1456" y="352" width="16" height="16">
+   <properties>
+    <property name="upgrade" value="penetrate shields"/>
+   </properties>
+  </object>
+  <object id="64" type="turret" x="288" y="148" width="16" height="16">
+   <properties>
+    <property name="delay" value="1.2"/>
+    <property name="mountSide" value="top"/>
+   </properties>
+  </object>
+  <object id="74" type="gate" x="1328" y="336" width="16" height="48">
+   <properties>
+    <property name="generator" value="generator1"/>
+   </properties>
+  </object>
+  <object id="76" name="generator1" type="generator" x="1296" y="368" width="16" height="16"/>
+  <object id="79" type="turret" x="768" y="176" width="16" height="16">
+   <properties>
+    <property name="burst" value="7"/>
+    <property name="burstCooldown" value="1"/>
+    <property name="cooldown" value="0.1-0.12"/>
+    <property name="delay" value="1"/>
+    <property name="mountSide" value="left"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="86" name="easyGateOpener" type="turret" x="1216" y="272" width="16" height="16">
+   <properties>
+    <property name="coolDown" value="3"/>
+    <property name="delay" value="3"/>
+    <property name="mountSide" value="top"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="89" type="turret" x="928" y="368" width="16" height="16">
+   <properties>
+    <property name="delay" value="0.6"/>
+    <property name="facing" value="right"/>
+    <property name="mountSide" value="bottom"/>
+   </properties>
+  </object>
+  <object id="90" type="turret" x="1112" y="448" width="16" height="16">
+   <properties>
+    <property name="facing" value="left"/>
+    <property name="gunAngle" value="180"/>
+    <property name="mountSide" value="top"/>
+   </properties>
+  </object>
+  <object id="93" type="gate" x="1328" y="608" width="48" height="16">
+   <properties>
+    <property name="generator" value="generator2"/>
+   </properties>
+  </object>
+  <object id="94" name="generator2" type="generator" x="1392" y="576" width="16" height="32"/>
+  <object id="95" type="turret" x="1132" y="664" width="16" height="16">
+   <properties>
+    <property name="alwaysFiring" value=""/>
+    <property name="cooldown" value="1"/>
+    <property name="facing" value="right"/>
+    <property name="gunAngle" value="90"/>
+    <property name="mountSide" value="left"/>
+    <property name="respawn" value="5"/>
+   </properties>
+  </object>
+  <object id="98" name="generator3" type="generator" x="1584" y="688" width="16" height="32"/>
+  <object id="100" type="turret" x="1460" y="668" width="16" height="16">
+   <properties>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="delay" value="0.5"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="top"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="101" type="turret" x="1432" y="668" width="16" height="16">
+   <properties>
+    <property name="0.5" value=""/>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="top"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="102" type="turret" x="1488" y="668" width="16" height="16">
+   <properties>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="delay" value="0.5"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="top"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="103" type="turret" x="1452" y="752" width="16" height="16">
+   <properties>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="delay" value="0.5"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="bottom"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="104" type="turret" x="1480" y="752" width="16" height="16">
+   <properties>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="delay" value="0.5"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="bottom"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="105" type="turret" x="1512" y="752" width="16" height="16">
+   <properties>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="delay" value="0.5"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="bottom"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+  <object id="106" type="turret" x="1568" y="732" width="16" height="16">
+   <properties>
+    <property name="burst" value="3"/>
+    <property name="burstCooldown" value="1.2"/>
+    <property name="cooldown" value="0.5-0.8"/>
+    <property name="delay" value="0.5"/>
+    <property name="generator" value="generator3"/>
+    <property name="mountSide" value="right"/>
+    <property name="range" value="550"/>
+    <property name="shielded" value=""/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="11" name="OneWays">
+  <properties>
+   <property name="defaultType" value="oneway"/>
+  </properties>
+  <object id="65" x="960" y="512" width="32" height="16"/>
+  <object id="66" x="816" y="608" width="80" height="16"/>
+  <object id="67" x="320" y="464" width="32" height="48"/>
+  <object id="68" x="288" y="448" width="32" height="64"/>
+  <object id="69" x="240" y="432" width="48" height="80"/>
+  <object id="70" x="240" y="368" width="96" height="16"/>
+  <object id="71" x="336" y="272" width="32" height="16"/>
+  <object id="72" x="368" y="256" width="48" height="80"/>
+  <object id="73" x="240" y="240" width="32" height="16"/>
+  <object id="81" x="816" y="224" width="32" height="16"/>
+  <object id="85" type="crate" x="1664" y="80" width="16" height="16">
+   <properties>
+    <property name="upgrade" value="health++"/>
+   </properties>
+  </object>
+  <object id="91" x="1664" y="112" width="64" height="16"/>
+  <object id="92" x="1600" y="224" width="48" height="16"/>
+  <object id="96" x="1584" y="656" width="32" height="16"/>
+ </objectgroup>
+</map>
