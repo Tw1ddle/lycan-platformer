@@ -75,7 +75,9 @@ class FluidZone extends LSprite {
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
-
+		
+		var lightningZone:LightningZone;
+		
 		if (Phys.debugManipulator != null && Phys.debugManipulator.mouseJoint != null) {
 			if (Phys.debugManipulator.mouseJoint.getBodyA() != null &&
 				Phys.debugManipulator.mouseJoint.getBodyB() != null) {
