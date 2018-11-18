@@ -1,7 +1,5 @@
 package;
 
-import box2D.dynamics.B2BodyType;
-import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
@@ -20,17 +18,16 @@ class PhysSprite extends LSprite implements PhysicsEntity {
 	}
 }
 
-class PhysicsTestState extends LycanState {
-    var player:Player;
-
+class TiledTestState extends LycanState {
 	override public function create():Void {
 		super.create();
 		
 		setupUI();
-		setupPhysics();
-		populateWorld();
-		createAndAddPlayer();
-		setupCamera();
+		
+        setupPhysics();
+		//populateWorld();
+		//createAndAddPlayer();
+		//setupCamera();
 	}
 	
 	override public function destroy():Void {
@@ -79,13 +76,10 @@ class PhysicsTestState extends LycanState {
 	}
 
 	private function populateWorld():Void {
-		addWorldWalls();
-		
-		//addRandomFlyingBoxes();
-		
-		addNobblyGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
+		//addWorldWalls();
 	}
 
+	/*
 	private function createAndAddPlayer():Void {
 		// Create player and set up player controller
 		player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 30, 100);
@@ -94,28 +88,10 @@ class PhysicsTestState extends LycanState {
 
 	private function setupCamera():Void {
 		FlxG.camera.pixelPerfectRender = false;
-
 		// Follow the player
-		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
-	}
+		//FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
+	}	
 
-	private function addWorldWalls():Void {
-		Phys.createWalls(FlxG.worldBounds.left, FlxG.worldBounds.top, FlxG.worldBounds.right, FlxG.worldBounds.bottom, 50);
-	}
-	
-	private function addRandomFlyingBoxes():Void {
-		var numSprites = 25;
-		for (i in 0...numSprites) {
-			var testSprite:PhysSprite = new PhysSprite(Std.int(FlxG.width / numSprites * i), Std.int(Math.random() * 250), Std.int(12 + Math.random() * 24), Std.int(12 + Math.random() * 24));
-			testSprite.physics.addRectangularShape(testSprite.width, testSprite.height, 10);
-			testSprite.physics.linearVelocityX = 3;
-			testSprite.physics.linearDamping = 0.1;
-			testSprite.physics.angularVelocity = 12;
-			testSprite.physics.angularDamping = 0.1;
-			add(testSprite);
-		}
-	}
-	
 	private function addStaticPlatform(x:Int, y:Int, width:Int, height:Int):Void {
 		var platform:PhysSprite = new PhysSprite(x, y, width, height);
 		platform.physics.addRectangularShape(platform.width, platform.height);
@@ -130,19 +106,6 @@ class PhysicsTestState extends LycanState {
 		add(wall);
 		return wall;
 	}
-	
-	private function addNobblyGround(x:Int, y:Int, width:Int, height:Int, parts:Int, nobblyYPositionVariation:Int = 0, nobblyHeightVariation:Int = 0):Void {
-		for (i in 0...parts) {
-			var wall:PhysSprite = new PhysSprite(x +  width * i, y + FlxG.random.int( -nobblyYPositionVariation, nobblyYPositionVariation),
-			width, height + FlxG.random.int( -nobblyHeightVariation, nobblyHeightVariation));
-			
-			wall.physics.addRectangularShape(wall.width, wall.height);
-			wall.physics.bodyType = B2BodyType.STATIC_BODY;
-			add(wall);
-		}
-	}
-
-	/*
 	private function addStaticOneWayPlatform():Void {
 	}
 	private function addMovingOneWayPlatform():Void {
