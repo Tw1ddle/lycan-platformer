@@ -32,5 +32,7 @@
 	},
 	"haxe.displayServer": { // configuration for starting haxe completion server itself
         "arguments": ["-v"], // arguments before --wait (-v is useful for debugging)
-    }
+	},
+	"gitlens.hovers.annotations.changes": false,
+	"gitlens.currentLine.enabled": false
 }

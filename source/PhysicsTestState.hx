@@ -1,20 +1,12 @@
 package;
 
-import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2BodyType;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.addons.ui.FlxSlider;
-import flixel.addons.ui.FlxUISlider;
 import flixel.math.FlxPoint;
-import flixel.system.FlxAssets;
-import flixel.system.FlxSound;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
-import lime.media.AudioSource;
 import lime.media.openal.ALAuxiliaryEffectSlot;
 import lime.media.openal.ALEffect;
-import lime.media.openal.ALFilter;
 import lycan.components.CameraAttachable;
 import lycan.effects.Lightning;
 import lycan.effects.LightningZone;
@@ -23,12 +15,7 @@ import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
 import lycan.world.components.PhysicsEntity;
-import openfl.Assets;
-import openfl.media.Sound;
-import openfl.media.SoundChannel;
-import lime.media.openal.AL;
 import lime.media.openal.ALSource;
-import lime.media.AudioSource;
 
 class PhysSprite extends LSprite implements PhysicsEntity {
 	public function new(x:Int, y:Int, width:Int, height:Int) {
@@ -122,6 +109,7 @@ class PhysicsTestState extends LycanState {
 		Phys.drawDebug = true;
 		Phys.debugManipulator = new Box2DInteractiveDebug();
 		//Phys.debugRenderer.setDrawScale(100);
+		
 		
 		addRandomFlyingBoxes();
 		

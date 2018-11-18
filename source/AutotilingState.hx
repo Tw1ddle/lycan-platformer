@@ -127,7 +127,7 @@ class FluidZone extends LSprite {
 				var fb = b == null ? point0 : b.velocity;
 				var fbr = br == null ? point0 : br.velocity;
 				
-				n.velocity = c.velocity + 
+				//n.velocity = c.velocity + 
 				
 			}
 			
