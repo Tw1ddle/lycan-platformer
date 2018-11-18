@@ -1,5 +1,10 @@
 package;
 
+import lime.media.openal.ALSource;
+import lycan.effects.Lightning;
+import lime.media.openal.ALAuxiliaryEffectSlot;
+import lime.media.openal.ALEffect;
+import lycan.effects.LightningZone;
 import flixel.FlxSprite;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -13,6 +18,9 @@ import lycan.util.Spring;
 import lycan.entities.LSprite;
 import lycan.util.algorithm.Bresenham;
 import openfl.display.Sprite;
+import lycan.effects.LightningZone;
+import lycan.components.CameraAttachable;
+import lycan.phys.Phys;
 
 class CameraLightningZone extends LightningZone implements CameraAttachable {}
 
