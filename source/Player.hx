@@ -1,5 +1,6 @@
 package;
 
+import box2D.collision.shapes.B2MassData;
 import box2D.common.math.B2Vec2;
 import box2D.dynamics.B2Fixture;
 import flixel.FlxG;
@@ -23,7 +24,7 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 			{name: "jumpUp", frameCount: 1},
 			{name: "zeroG", frameCount: 1},
 			{name: "fall", frameCount: 1}
-		]);
+		], FlxColor.WHITE, 10);
 		
 		physics.init();
 		physics.fixedRotation = true;
@@ -37,12 +38,22 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
-		var runSpeed = 200;
+		var runSpeed = 2000;
+		var physics:PhysicsComponent = physics;
+		physics.set_linearDamping(0);
 		
 		if (FlxG.keys.anyPressed([FlxKey.A, FlxKey.LEFT])) {
 			physics.applyImpulse(-runSpeed, 0);
 		} else if (FlxG.keys.anyPressed([FlxKey.D, FlxKey.RIGHT])) {
 			physics.applyImpulse(runSpeed, 0);
+		}
+		
+		
+		if (FlxG.keys.anyPressed([FlxKey.ENTER])) {
+			animation.play("run");
+		}
+		if (FlxG.keys.anyPressed([FlxKey.SPACE])) {
+			animation.play("idle");
 		}
 		
 		if (FlxG.keys.anyJustPressed([FlxKey.W, FlxKey.UP])) {
