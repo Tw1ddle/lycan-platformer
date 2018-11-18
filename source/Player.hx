@@ -13,7 +13,15 @@ import lycan.world.components.Groundable;
 import lycan.world.components.PhysicsEntity;
 import box2D.dynamics.B2FilterData;
 
+class MovingPlatform {}
+
 class Player extends LSprite implements PhysicsEntity implements Groundable {
+	var jumpSpeed:Float = -8;
+	var runImpulse:Float = 10;
+	var runSpeed:Float = 5;
+	var movingPlatforms:Array<MovingPlatform>;
+	var currentMovingPlatform:MovingPlatform;
+	
 	public function new(x:Int, y:Int, width:Int, height:Int) {
 		super(x, y);
 		makeGraphic(width, height, FlxColor.fromRGB(255, 255, 0, 180));
@@ -31,14 +39,15 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		physics.sleepingAllowed = false;
 		physics.addRectangularShapeAdv(width, height, 0, 0, 50, new B2FilterData(), 10, false, 0, this);
 		
+		//box2D.collision.
+		//physics.body.getContactList()
+		
 		// Sensor for checking if grounded
 		var groundedSensor = physics.addCircleShapeAdv(10, 0, height / 2, 50, new B2FilterData(), 10, true, 0, this);
 	}
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
-		
-		var runImpulse = 10;
 		
 		if (FlxG.keys.anyPressed([FlxKey.A, FlxKey.LEFT])) {
 			physics.applyImpulse(-runImpulse, 0);
@@ -55,11 +64,9 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		}
 		
 		if (FlxG.keys.anyJustPressed([FlxKey.W, FlxKey.UP])) {
-			
-			if (groundable.isGrounded) {
-				physics.linearVelocityY = -2;
+			if (true || groundable.isGrounded) {// TODO condition
+				physics.linearVelocityY = jumpSpeed;
 			}
-			
 		}
 		
 		// TODO double jumps + not hanging on walls
@@ -67,5 +74,13 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		if (groundable.isGrounded) {
 			trace(groundable.isGrounded); // (actually before it updates, since it's appended)
 		}
+	}
+	
+	public function run() {
+		
+	}
+	
+	public function jump() {
+		
 	}
 }
