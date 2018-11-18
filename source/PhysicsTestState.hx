@@ -152,6 +152,9 @@ class PhysicsTestState extends LycanState {
 				lightningZone.visible = true;
 				var b = Phys.debugManipulator.mouseJoint.getBodyB().getUserData();
 				for (l in lightningZone.group.members) {
+					if (b == null) {
+						continue;
+					}
 					var e:LSprite = cast b.entity;
 					l.startPoint.x = e.center.x - FlxG.camera.scroll.x;
 					l.startPoint.y = e.center.y - FlxG.camera.scroll.y;
