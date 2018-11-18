@@ -29,5 +29,8 @@
 		"commentdescription": "\n",
 		"paramFormat": "@param   ${name} ",
 		"returnFormat": "@return  ${type}"
-	}
+	},
+	"haxe.displayServer": { // configuration for starting haxe completion server itself
+        "arguments": ["-v"], // arguments before --wait (-v is useful for debugging)
+    }
 }
