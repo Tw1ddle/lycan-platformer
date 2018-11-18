@@ -38,8 +38,8 @@ class RootState extends LycanRootState {
 
 		//openSubState(new Box2dPhysicsState());
 		//openSubState(new AutotilingState());
-		
-		openSubState(new PhysicsTestState());
+		//openSubState(new PhysicsTestState());
+		openSubState(new TiledTestState());
 	}
 	
 	// Some code for easing the zoom level
