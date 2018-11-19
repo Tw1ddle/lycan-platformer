@@ -20,7 +20,7 @@ import lycan.system.FpsText;
 import lycan.world.components.PhysicsEntity;
 
 class TiledTestState extends LycanState {
-    var spriteZoom:Int = 2;
+    var spriteZoom:Int = 3;
     var player:Player = null;
 	var collisionLayer:TileLayer = null;
 	var world:World = null;
@@ -98,7 +98,7 @@ class TiledTestState extends LycanState {
 	}
 
 	private function loadWorld():Void {
-		world = new World(FlxPoint.get(2, 2));
+		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
 		var loader = new ObjectLoaderRules();
 		
 		
@@ -109,10 +109,10 @@ class TiledTestState extends LycanState {
 		
 		// TODO little experiment to scale everything up
 		loader.addHandler((_)->return true, function(obj:TiledObject, layer:ObjectLayer) {
-			obj.width *= 2;
-			obj.height *= 2;
-			obj.x *= 2;
-			obj.y *= 2;
+			obj.width *= spriteZoom;
+			obj.height *= spriteZoom;
+			obj.x *= spriteZoom;
+			obj.y *= spriteZoom;
 			return null;
 		});
 		
@@ -123,7 +123,7 @@ class TiledTestState extends LycanState {
 			return player;
 		});
 		loader.addHandler(matchType.bind("crate"), function(obj:TiledObject, layer:ObjectLayer) {
-			var crate:PhysSprite = new PhysSprite(obj.x, obj.y, 50, 50);
+			var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
 			crate.physics.body.setType(B2BodyType.STATIC_BODY);
 			crateGroup.add(crate);
 			return crate;
