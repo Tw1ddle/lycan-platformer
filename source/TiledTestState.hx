@@ -1,5 +1,6 @@
 package;
 
+import box2D.dynamics.B2BodyType;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import lycan.world.ObjectLoaderRules;
 import flixel.FlxCamera.FlxCameraFollowStyle;
@@ -97,19 +98,33 @@ class TiledTestState extends LycanState {
 	}
 
 	private function loadWorld():Void {
-		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
+		world = new World(FlxPoint.get(2, 2));
 		var loader = new ObjectLoaderRules();
-
-		var matchType = function(type:String, obj:TiledObject, layer:TiledObjectLayer) {
+		
+		
+		//TODO note that TiledObject already makes a reference to the TiledObjectLayer it is on, so we don't need to pass it
+		var matchType = function(type:String, obj:TiledObject) {
 			return obj.type == type;
 		};
 		
+		// TODO little experiment to scale everything up
+		loader.addHandler((_)->return true, function(obj:TiledObject, layer:ObjectLayer) {
+			obj.width *= 2;
+			obj.height *= 2;
+			obj.x *= 2;
+			obj.y *= 2;
+			return null;
+		});
+		
+		//TODO I think we might not even need to return the objects with these loaders anymore
+		// This was for things like getting a refernce to player
 		loader.addHandler(matchType.bind("player"), function(obj:TiledObject, layer:ObjectLayer) {
-			player.setPosition(obj.x, obj.y + obj.height - player.height / 2);
+			player.physics.setPixelPosition(obj.x, obj.y + obj.height - player.height);
 			return player;
 		});
 		loader.addHandler(matchType.bind("crate"), function(obj:TiledObject, layer:ObjectLayer) {
 			var crate:PhysSprite = new PhysSprite(obj.x, obj.y, 50, 50);
+			crate.physics.body.setType(B2BodyType.STATIC_BODY);
 			crateGroup.add(crate);
 			return crate;
 		});
@@ -125,7 +140,7 @@ class TiledTestState extends LycanState {
 		loader.addHandler(matchType.bind("oneway"), function(obj:TiledObject, layer:ObjectLayer) {
 			var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
 			onewayGroup.add(oneway);
-			return oneway;
+			return null;//TODO oneway;
 		});
 		
 		world.load("assets/data/world.tmx", loader);

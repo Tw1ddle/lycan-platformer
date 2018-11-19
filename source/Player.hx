@@ -69,6 +69,7 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 			}
 		}
 		
+		//physics.body.getContactList
 		// TODO double jumps + not hanging on walls
 		
 		if (groundable.isGrounded) {
