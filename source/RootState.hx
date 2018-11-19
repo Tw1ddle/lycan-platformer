@@ -8,7 +8,7 @@ import flixel.math.FlxMath;
 
 class RootState extends LycanRootState {
 	
-	var testStates:Array<Class<LycanState>> = [PhysicsTestState];
+	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState];
 	var currentTestState:Int = 0;
 	
 	public function new() {
