@@ -3,13 +3,8 @@ package;
 import box2D.dynamics.B2BodyType;
 import flixel.FlxCamera;
 import flixel.FlxG;
-import flixel.math.FlxPoint;
-import flixel.util.FlxColor;
-import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
-import lycan.system.FpsText;
-import lycan.world.components.PhysicsEntity;
 
 class PhysicsTestState extends LycanState {
     var player:Player;

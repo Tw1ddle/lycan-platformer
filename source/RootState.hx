@@ -4,11 +4,10 @@ import lycan.states.LycanState;
 import flixel.FlxG;
 import flixel.system.scaleModes.RatioScaleMode;
 import lycan.states.LycanRootState;
-import flixel.math.FlxMath;
 
 class RootState extends LycanRootState {
 	
-	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState];
+	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState, Box2dPhysicsState];
 	var currentTestState:Int = 0;
 	
 	public function new() {

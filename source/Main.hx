@@ -1,7 +1,5 @@
 package;
 
-import flash.geom.Point;
-import flixel.FlxBasic;
 import flixel.FlxGame;
 import openfl.display.Sprite;
 

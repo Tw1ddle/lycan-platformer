@@ -23,10 +23,8 @@ package;
 
 import box2D.collision.*;
 import box2D.collision.shapes.*;
-import box2D.common.*;
 import box2D.common.math.*;
 import box2D.dynamics.*;
-import box2D.dynamics.contacts.*;
 import box2D.dynamics.controllers.B2BuoyancyController;
 import box2D.dynamics.joints.*;
 import flash.display.Sprite;

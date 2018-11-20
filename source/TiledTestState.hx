@@ -1,7 +1,6 @@
 package;
 
 import box2D.dynamics.B2BodyType;
-import flixel.addons.editors.tiled.TiledObjectLayer;
 import lycan.world.ObjectLoaderRules;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.addons.editors.tiled.TiledObject;
@@ -13,11 +12,9 @@ import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
-import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
-import lycan.world.components.PhysicsEntity;
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
