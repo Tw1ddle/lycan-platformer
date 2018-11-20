@@ -5,6 +5,7 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
+import lycan.system.FpsText;
 
 class PhysicsTestState extends LycanState {
     var player:Player;
