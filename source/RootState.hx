@@ -4,7 +4,6 @@ import lycan.states.LycanState;
 import flixel.FlxG;
 import flixel.system.scaleModes.RatioScaleMode;
 import lycan.states.LycanRootState;
-import flixel.math.FlxMath;
 
 class RootState extends LycanRootState {
 	
