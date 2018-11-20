@@ -7,7 +7,7 @@ import lycan.states.LycanRootState;
 
 class RootState extends LycanRootState {
 	
-	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState, Box2dPhysicsState];
+	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState];
 	var currentTestState:Int = 0;
 	
 	public function new() {

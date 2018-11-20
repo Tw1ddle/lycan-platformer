@@ -25,7 +25,6 @@ class TiledTestState extends LycanState {
 	// Groups
 	var onewayGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
 	var crateGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
-	var worldCollisionGroup:FlxGroup = new FlxGroup();
 
 	override public function create():Void {
 		super.create();
@@ -33,24 +32,22 @@ class TiledTestState extends LycanState {
 		setupUI();
         initPhysics();
 		
-		// Player
-		player = new Player(0, 0, 40, 100);
 		overlay.color = FlxColor.RED;
-	
-		// Camera follows the player
-		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
-		FlxG.camera.snapToTarget();	
 
 		// World
 		loadWorld();
-		worldCollisionGroup.add(player);
-		worldCollisionGroup.add(crateGroup);
+
 		add(world);
+
+		add(onewayGroup);
+		add(crateGroup);
 		
 		collisionLayer = cast world.getLayer("Collisions");
 	}
 	
 	override public function destroy():Void {
+		FlxG.camera.follow(null);
+
 		destroyPhysics();
 		super.destroy();
 	}
@@ -116,7 +113,13 @@ class TiledTestState extends LycanState {
 		//TODO I think we might not even need to return the objects with these loaders anymore
 		// This was for things like getting a refernce to player
 		loader.addHandler(matchType.bind("player"), function(obj:TiledObject, layer:ObjectLayer) {
+			player = new Player(0, 0, 40, 100);
 			player.physics.setPixelPosition(obj.x, obj.y + obj.height - player.height);
+
+			// Camera follows the player
+			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
+			FlxG.camera.snapToTarget();	
+
 			return player;
 		});
 		loader.addHandler(matchType.bind("crate"), function(obj:TiledObject, layer:ObjectLayer) {
