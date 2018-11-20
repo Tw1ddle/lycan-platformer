@@ -74,7 +74,17 @@ class PhysicsTestState extends LycanState {
 		
 		//addRandomFlyingBoxes();
 		
-		addNobblyGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 350), 10, 10, 50, 0, 0);
+		addNobblyGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 50), 10, 10, 50, 6, 0);
+		
+		var totalHeight:Float = 0;
+		var totalWidth:Float = 0;
+		for (i in 0...11) {
+			var p = addStaticPlatform(Std.int(500 + totalWidth), Std.int(FlxG.height + 50 - totalHeight), 100, 100);
+			var a = - i * Math.PI / 20;
+			p.physics.body.setAngle(a);
+			totalWidth += Math.cos(a) * 50;
+			totalHeight += -Math.sin(a) * 50;
+		}
 	}
 
 	private function createAndAddPlayer():Void {
@@ -107,11 +117,13 @@ class PhysicsTestState extends LycanState {
 		}
 	}
 	
-	private function addStaticPlatform(x:Int, y:Int, width:Int, height:Int):Void {
+	private function addStaticPlatform(x:Int, y:Int, width:Int, height:Int):PhysSprite {
 		var platform:PhysSprite = new PhysSprite(x, y, width, height);
 		platform.physics.addRectangularShape(platform.width, platform.height);
 		platform.physics.bodyType = B2BodyType.STATIC_BODY;
+		platform.physics.body.getFixtureList().setFriction(1);
 		add(platform);
+		return platform;
 	}
 	
 	private function addWall(x:Int, y:Int, width:Int, height:Int, bodyType:B2BodyType = B2BodyType.STATIC_BODY):PhysSprite {

@@ -1,5 +1,6 @@
 package;
 
+import flixel.math.FlxAngle;
 import box2D.collision.B2WorldManifold;
 import flixel.math.FlxPoint;
 import flixel.math.FlxVector;
@@ -43,8 +44,9 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		physics.init();
 		physics.fixedRotation = true;
 		physics.sleepingAllowed = false;
-		physics.addRectangularShapeAdv(width, height - width / 2, 0, -width / 4, 50, new B2FilterData(), 10, false, 0, this);
-		feetFixture = physics.addCircleShapeAdv(width / 2, 0, (height - width) / 2, 0, new B2FilterData(), 0, false, 0, this);
+		physics.addRectangularShapeAdv(width, height - width / 2, 0, -width / 4, 50, new B2FilterData(), 0, false, 0, this);
+		feetFixture = physics.addCircleShapeAdv(width / 2 - 2, 0, (height - width) / 2 - 1, 0, new B2FilterData(), 0, false, 0, this);
+		//physics.addP
 	}
 	
 	override public function update(dt:Float):Void {
@@ -81,16 +83,18 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 				FlxG.watch.addQuick("normal", normal.x + " " + normal.y);
 				FlxG.watch.addQuick("body a", fa);
 				FlxG.watch.addQuick("body b", c.contact.getFixtureB().m_body == physics.body);
-				var a:Float = fn.angleBetween(FlxPoint.weak(0, fa ? 0 : -1));
+				var a:Float = fn.angleBetween(FlxPoint.weak(0, 0)) - 180;
+				FlxG.watch.addQuick("normal deg", a);
 				fn.put();
 				
-				if (Math.abs(a) < 30) groundable.forceGrounded = true;
+				if (Math.abs(a) < 60) groundable.forceGrounded = true;
 				
 				i++;
 			}
 			c = c.next;
 		}
 		FlxG.watch.addQuick("contacts", i);
+		FlxG.watch.addQuick("grounded", groundable.isGrounded);
 		
 		if (groundable.isGrounded && !running) {
 			feetFixture.setFriction(100);
