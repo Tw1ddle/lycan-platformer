@@ -1,5 +1,6 @@
 package;
 
+import nape.geom.Vec2;
 import nape.phys.BodyType;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -15,14 +16,19 @@ class PhysicsTestState extends LycanState {
 		
 		Phys.init();
 		Phys.drawDebug = true;
-		//Phys.debugManipulator = new Box2DInteractiveDebug();
+		Phys.enableDebugManipulator = true;
 		
 		populateWorld();
 		
 		player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 30, 100);
 		add(player);
 		
+		#if flash
+		FlxG.camera.pixelPerfectRender = true;
+		#else
 		FlxG.camera.pixelPerfectRender = false;
+		#end
+		
 		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
 		
 		uiGroup.add(new FpsText(0, 0, 24));
@@ -30,7 +36,7 @@ class PhysicsTestState extends LycanState {
 	
 	override public function destroy():Void {
 		super.destroy();
-		destroyPhysics();
+		Phys.destroy();
 	}
 	
 	override public function update(dt:Float):Void {
@@ -45,32 +51,30 @@ class PhysicsTestState extends LycanState {
 	private function handleInput(dt:Float):Void {
 		// Add the selected physics debug widget to the watch
 		if (FlxG.keys.justPressed.Y) {
-			// var body = Phys.debugManipulator.getBodyAtMouse();
-			// if (body != null) {
-			// 	FlxG.watch.add(body.getPosition(), "x", "body x");
-			// 	FlxG.watch.add(body.getPosition(), "y", "body y");
-			// 	FlxG.watch.add(body.getUserData().entity, "x", "sprite x");
-			// 	FlxG.watch.add(body.getUserData().entity, "y", "sprite y");
-			// 	FlxG.watch.add(body.m_linearVelocity, "x", "linearVelocityX");
-			// 	FlxG.watch.add(body.m_linearVelocity, "y", "linearVelocityY");
-			// }
+			var bodies = Phys.space.bodiesUnderPoint(Vec2.weak(FlxG.mouse.x, FlxG.mouse.y));
+			var body = bodies.length > 0 ? bodies.at(0) : null;
+			if (body != null) {
+				FlxG.watch.add(body.position, "x", "body x");
+				FlxG.watch.add(body.position, "y", "body y");
+				FlxG.watch.add(body.userData.entity, "x", "sprite x");
+				FlxG.watch.add(body.userData.entity, "y", "sprite y");
+				FlxG.watch.add(body.velocity, "x", "vel x");
+				FlxG.watch.add(body.velocity, "y", "vel y");
+			}
 		}
 	}
 
-	private function destroyPhysics():Void {
-		Phys.destroy();
-	}
-
 	private function populateWorld():Void {
-		Phys.createWalls(FlxG.worldBounds.left, FlxG.worldBounds.top, FlxG.worldBounds.right, FlxG.worldBounds.bottom, 50);
+		trace(FlxG.worldBounds);
+		Phys.createWalls(0, 0, FlxG.width, FlxG.height, 50);
 		//addRandomFlyingBoxes();
 		addNobblyGround(Std.int(FlxG.width / 2 - 780), Std.int(FlxG.height - 50), 10, 10, 50, 6, 0);
 		
 		var totalHeight:Float = 0;
 		var totalWidth:Float = 0;
-		for (i in 0...11) {
+		for (i in 0...10) {
 			var a = - i * Math.PI / 20;
-			var p = addStaticPlatform(Std.int(500 + totalWidth), Std.int(FlxG.height + 50 - totalHeight), 100, 100, a);
+			addStaticPlatform(Std.int(735 + totalWidth), Std.int(FlxG.height - totalHeight + 50), 100, 100, a);
 			totalWidth += Math.cos(a) * 50;
 			totalHeight += -Math.sin(a) * 50;
 		}
@@ -102,7 +106,6 @@ class PhysicsTestState extends LycanState {
 			var wall:PhysSprite = new PhysSprite(x +  width * i, y + FlxG.random.int( -nobblyYPositionVariation, nobblyYPositionVariation),
 			width, height + FlxG.random.int( -nobblyHeightVariation, nobblyHeightVariation));
 			
-			//wall.physics.makeRe(wall.width, wall.height);
 			wall.physics.body.type = BodyType.STATIC;
 			add(wall);
 		}

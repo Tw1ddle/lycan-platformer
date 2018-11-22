@@ -41,6 +41,7 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		], FlxColor.WHITE, 10);
 		
 		physics.init(BodyType.DYNAMIC, false);
+		physics.body.position.setxy(x, y);
 		physics.body.allowRotation = false;
 		feetShape = new Circle(width / 2, Vec2.weak(0, (height - width) / 2));
 		physics.body.shapes.add(feetShape);

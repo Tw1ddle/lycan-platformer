@@ -1,10 +1,11 @@
 {
 	"haxe.diagnosticsPathFilter": "${workspaceRoot}/source",
 	"search.exclude": {
-		"export/**/*.hx": true
+		"expoirt/**/*.hx": true
 	},
 	"lime.defaultBuildConfiguration": "Debug",
 	"lime.defaultTarget": "Neko",
 	"gitlens.codeLens.enabled": false,
-	"gitlens.currentLine.enabled": false
+	"gitlens.currentLine.enabled": false,
+	"debug.openExplorerOnEnd": true
 }

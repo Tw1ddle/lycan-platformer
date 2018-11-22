@@ -73,27 +73,6 @@ class FluidZone extends LSprite {
 		
 		var lightningZone:LightningZone;
 		
-		if (Phys.debugManipulator != null && Phys.debugManipulator.mouseJoint != null) {
-			if (Phys.debugManipulator.mouseJoint.getBodyA() != null &&
-				Phys.debugManipulator.mouseJoint.getBodyB() != null) {
-				lightningZone.active = true;
-				lightningZone.visible = true;
-				var b = Phys.debugManipulator.mouseJoint.getBodyB().getUserData();
-				for (l in lightningZone.group.members) {
-					if (b == null) {
-						continue;
-					}
-					var e:LSprite = cast b.entity;
-					l.startPoint.x = e.center.x - FlxG.camera.scroll.x;
-					l.startPoint.y = e.center.y - FlxG.camera.scroll.y;
-					l.endPoint.set(FlxG.mouse.getScreenPosition().x, FlxG.mouse.getScreenPosition().y);
-				}
-			}
-		} else {
-			lightningZone.active = false;
-			lightningZone.visible = false;
-		}
-		
 		if (FlxG.mouse.overlaps(this)) {
 			if (lastPoint != null) {
 				var start:FlxPoint = lastPoint.subtract(x, y);
