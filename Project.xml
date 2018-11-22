@@ -28,16 +28,14 @@
 
 	<!-- _______________________________ Libraries ______________________________ -->
 
-	<haxelib name="box2d" />
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
-	<haxelib name="msignal"/>
-	<haxelib name="box2d"/>
 	<haxelib name="sure" />
 	<haxelib name="tink_lang" />
 	<haxelib name="tink_macro" />
 	<haxelib name="lycan" />
 	<haxelib name="flixel-ui" />
+	<haxelib name="nape" />
 
 	<!-- ______________________________ Haxedefines _____________________________ -->
 

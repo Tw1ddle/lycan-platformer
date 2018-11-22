@@ -1,5 +1,6 @@
 package;
 
+import lycan.phys.Box2DInteractiveDebug;
 import box2D.dynamics.B2BodyType;
 import lycan.world.ObjectLoaderRules;
 import flixel.FlxCamera.FlxCameraFollowStyle;
