@@ -7,7 +7,7 @@ import lycan.states.LycanRootState;
 
 class RootState extends LycanRootState {
 	
-	var testStates:Array<Class<LycanState>> = [PhysicsTestState];
+	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState];
 	var currentTestState:Int = 0;
 	
 	public function new() {
@@ -25,7 +25,6 @@ class RootState extends LycanRootState {
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
-		
 		
 		if (FlxG.keys.justPressed.F1) {
 			currentTestState++;
