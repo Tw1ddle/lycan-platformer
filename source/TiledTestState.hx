@@ -1,9 +1,6 @@
 package;
 
 import nape.phys.BodyType;
-import flixel.addons.nape.FlxNapeTilemap;
-import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.addons.editors.tiled.TiledObject;
 import lycan.world.layer.TileLayer;
@@ -16,15 +13,6 @@ import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
 import flixel.util.FlxSignal;
-import nape.geom.AABB;
-import nape.geom.GeomPoly;
-import nape.geom.GeomPolyList;
-import nape.geom.IsoFunction;
-import nape.geom.Mat23;
-import nape.geom.MarchingSquares;
-import nape.geom.Vec2;
-
-
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
@@ -77,6 +65,7 @@ class TiledTestState extends LycanState {
 	private function initPhysics():Void {
 		Phys.init();
 		Phys.drawDebug = true;
+		Phys.enableDebugManipulator = true;
 	}
 
 	private function destroyPhysics():Void {
@@ -113,8 +102,9 @@ class TiledTestState extends LycanState {
 				return;
 			}
 
-			player = new Player(obj.x, obj.y, 40, 100);
+			player = new Player(obj.x, obj.y, 15, 40);
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
+			add(player);
 
 			// Camera follows the player
 			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
@@ -125,7 +115,6 @@ class TiledTestState extends LycanState {
 			if(!matchType("crate", obj)) {
 				return;
 			}
-
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
 			//crateGroup.add(crate);
 		});
@@ -165,12 +154,11 @@ class TiledTestState extends LycanState {
 
 		// TODO use FlxNapeTilemap instead, refactor TileMap.hx
 		var zoomedSize = 16 * spriteZoom;
-		var halfZoomedSize = Std.int(zoomedSize / 2);
 		for(h in 0...collisionLayer.heightInTiles) {
 			for(w in 0...collisionLayer.widthInTiles) {
 				var tile = collisionLayer.data[w + (collisionLayer.widthInTiles * h)];
 				if(tile != 0) {
-					var obj:PhysSprite = new PhysSprite(w * zoomedSize + halfZoomedSize, h * zoomedSize + halfZoomedSize, zoomedSize, zoomedSize);
+					var obj:PhysSprite = new PhysSprite(w * zoomedSize + 24, h * zoomedSize + 24, zoomedSize, zoomedSize);
 					obj.physics.body.type = BodyType.STATIC;
 					collisionGroup.add(obj);
 				}
