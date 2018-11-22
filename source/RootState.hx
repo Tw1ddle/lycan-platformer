@@ -4,6 +4,7 @@ import lycan.states.LycanState;
 import flixel.FlxG;
 import flixel.system.scaleModes.RatioScaleMode;
 import lycan.states.LycanRootState;
+import lycan.core.LG;
 
 class RootState extends LycanRootState {
 	
@@ -25,6 +26,8 @@ class RootState extends LycanRootState {
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
+		
+		LG.lateUpdate.dispatch(dt);
 		
 		if (FlxG.keys.justPressed.F1) {
 			currentTestState++;
