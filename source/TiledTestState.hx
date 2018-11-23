@@ -154,9 +154,9 @@ class TiledTestState extends LycanState {
 
 		// TODO use FlxNapeTilemap instead, refactor TileMap.hx
 		var zoomedSize = 16 * spriteZoom;
-		for(h in 0...collisionLayer.heightInTiles) {
-			for(w in 0...collisionLayer.widthInTiles) {
-				var tile = collisionLayer.data[w + (collisionLayer.widthInTiles * h)];
+		for(h in 0...collisionLayer.tilemap.heightInTiles) {
+			for(w in 0...collisionLayer.tilemap.widthInTiles) {
+				var tile = collisionLayer.data[w + (collisionLayer.tilemap.widthInTiles * h)];
 				if(tile != 0) {
 					var obj:PhysSprite = new PhysSprite(w * zoomedSize + 24, h * zoomedSize + 24, zoomedSize, zoomedSize);
 					obj.physics.body.type = BodyType.STATIC;
