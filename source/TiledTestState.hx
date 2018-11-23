@@ -1,5 +1,9 @@
 package;
 
+import flixel.util.typeLimit.OneOfTwo;
+import nape.shape.Polygon;
+import lycan.entities.LSprite;
+import lycan.world.ObjectLoader;
 import nape.phys.BodyType;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.addons.editors.tiled.TiledObject;
@@ -13,6 +17,10 @@ import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
 import flixel.util.FlxSignal;
+import lycan.world.layer.ObjectLayer;
+import lycan.world.components.PhysicsEntity;
+
+using lycan.world.ObjectLoader;
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
@@ -75,7 +83,7 @@ class TiledTestState extends LycanState {
 	private function loadWorld():Void {
 		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
 
-		var loader = new FlxTypedSignal<TiledObject->Void>();
+		var loader = new FlxTypedSignal<ObjectHandler>();
 
 		// TODO Insert the object into the named objects map
 		//if (o.name != null && o.name != "") {
@@ -90,80 +98,71 @@ class TiledTestState extends LycanState {
 		};
 
 		// Scale everything up
-		loader.add(function(obj:TiledObject) {
+		loader.add((obj, layer)->{
 			obj.width *= spriteZoom;
 			obj.height *= spriteZoom;
 			obj.x *= spriteZoom;
 			obj.y *= spriteZoom;
 		});
 
-		loader.add(function(obj:TiledObject) {
-			if(!matchType("player", obj)) {
-				return;
-			}
-
+		loader.addByType("player", (obj, layer)->{
 			player = new Player(obj.x, obj.y, 15, 40);
+			// TODO I think this won't be positioning the body properly
+			// Perhaps we need to readd a setPositon for bodies from flixel coords?
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
 			add(player);
 
 			// Camera follows the player
+			// TODO this would need the updatePosition thing, and I think it probably wouldn't belong in a deault loader
 			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
 			FlxG.camera.snapToTarget();	
 		});
 
-		loader.add(function(obj:TiledObject) {
-			if(!matchType("crate", obj)) {
-				return;
-			}
+		loader.addByType("crate", (obj, layer)->{
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
 			//crateGroup.add(crate);
 		});
 
-		loader.add(function(obj:TiledObject) {
-			if(!matchType("movingPlatform", obj)) {
-				return;
-			}
+		loader.addByType("movingPlatform", (obj, layer)->{
 			// TODO
 		});
 
-		loader.add(function(obj:TiledObject) {
-			if(!matchType("switch", obj)) {
-				return;
-			}
+		loader.addByType("switch", (obj, layer)->{
 			// TODO
 		});
 
-		loader.add(function(obj:TiledObject) {
-			if(!matchType("button", obj)) {
-				return;
-			}
+		loader.addByType("button", (obj, layer)->{
 			// TODO
 		});
 
-		loader.add(function(obj:TiledObject) {
-			if(!matchType("oneway", obj)) {
-				return;
-			}
+		loader.addByType("oneway", (obj, layer)->{
 			//var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
 			//onewayGroup.add(oneway);
 		});
 		
 		world.load("assets/data/world.tmx", loader);
-
+		
+		// TODO ditch this?
 		collisionLayer = cast world.getLayer("Collisions");
 
+
+		var tm = collisionLayer.tilemap;
+		
 		// TODO use FlxNapeTilemap instead, refactor TileMap.hx
 		var zoomedSize = 16 * spriteZoom;
-		for(h in 0...collisionLayer.tilemap.heightInTiles) {
-			for(w in 0...collisionLayer.tilemap.widthInTiles) {
-				var tile = collisionLayer.data[w + (collisionLayer.tilemap.widthInTiles * h)];
-				if(tile != 0) {
-					var obj:PhysSprite = new PhysSprite(w * zoomedSize + 24, h * zoomedSize + 24, zoomedSize, zoomedSize);
-					obj.physics.body.type = BodyType.STATIC;
-					collisionGroup.add(obj);
+		var obj:BasicPhysSprite = new BasicPhysSprite();
+		obj.physics.init(null, false);
+		for (h in 0...tm.heightInTiles) {
+			for (w in 0...tm.widthInTiles) {
+				var tile = collisionLayer.data[w + (tm.widthInTiles * h)];
+				if (tile != 0) {
+					@:privateAccess(flixel.tile.FlxTilemap) obj.physics.body.shapes.add(new Polygon(Polygon.rect(
+						w * tm._tileWidth * spriteZoom, h * tm._tileHeight * spriteZoom, tm._tileWidth * spriteZoom, tm._tileHeight * spriteZoom)));
 				}
 			}
 		}
+		
+		obj.physics.body.type = BodyType.STATIC;
 
 		add(collisionGroup);
 		add(world);
@@ -171,3 +170,5 @@ class TiledTestState extends LycanState {
 		add(crateGroup);
 	}
 }
+
+class BasicPhysSprite extends LSprite implements PhysicsEntity {}

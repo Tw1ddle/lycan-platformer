@@ -29,6 +29,10 @@ class PhysicsTestState extends LycanState {
 		FlxG.camera.pixelPerfectRender = false;
 		#end
 		
+		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
+        player.physics.updatePosition();
+        FlxG.camera.snapToTarget();
+		
 		uiGroup.add(new FpsText(0, 0, 24));
 		
 		Phys.drawDebug = false;
