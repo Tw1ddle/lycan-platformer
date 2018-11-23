@@ -16,6 +16,7 @@ import lycan.world.components.Groundable;
 import lycan.world.components.PhysicsEntity;
 import nape.shape.Shape;
 import nape.phys.BodyType;
+import lycan.phys.Phys;
 
 class MovingPlatform {}
 
@@ -46,6 +47,8 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		feetShape = new Circle(width / 2, Vec2.weak(0, (height - width) / 2));
 		physics.body.shapes.add(feetShape);
 		physics.body.shapes.add(new Polygon(Polygon.rect(-width / 2, -height / 2, width, height - width / 2)));
+		physics.setBodyMaterial();
+		// //feetShape.
 	}
 	
 	override public function update(dt:Float):Void {
@@ -59,6 +62,7 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 			physics.body.applyImpulse(Vec2.weak(runImpulse, 0));
 			running = true;
 		}
+		if (FlxG.keys.anyPressed([A, LEFT, RIGHT, D])) running = true;
 		
 		
 		if (FlxG.keys.anyPressed([FlxKey.ENTER])) {
@@ -77,6 +81,8 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 			feetShape.material.dynamicFriction = 0;
 			feetShape.material.staticFriction = 0;
 		}
+		
+		FlxG.watch.addQuick("feet friction", feetShape.material.dynamicFriction);
 		
 		if (FlxG.keys.anyPressed([FlxKey.W, FlxKey.UP])) {
 			if (groundable.isGrounded) {// TODO condition

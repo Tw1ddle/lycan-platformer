@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="67" height="67" tilewidth="16" tileheight="16" infinite="1" nextlayerid="13" nextobjectid="1">
+ <properties>
+  <property name="AutomappingRadius" type="int" value="1"/>
+  <property name="DeleteTiles" type="bool" value="false"/>
+ </properties>
+ <tileset firstgid="1" source="../autotiles_full.tsx"/>
+ <tileset firstgid="49" source="../collisions.tsx"/>
+ <layer id="5" name="regions" width="67" height="67" opacity="0.15">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYGBgMGRABcTwDdHY5PKJtY9WgFT3YZOjpf9x2UctQKx7SVVPz/QxCsgHAMs/Du8=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYGBgMIRiGEBmE+IbMqDqJ5VPqn3IZlALkOIfUtXTmk8pwGU+IXlquh+bfcTaPwooAwBvPxB3
+  </chunk>
+   <chunk x="32" y="0" width="16" height="16">
+   eJxjYGBgMIRiGMDGZ8Ahb0ghH5d9pPApAcS6j5BbqBUeuPi47KcUkGs/rf1LrP2jgDIAACfrEZ0=
+  </chunk>
+   <chunk x="48" y="0" width="16" height="16">
+   eJxjYGBgMIRiGEBnI/NxyRuSycdmBz77sPEpBaT4h1T1tOZTCii1b6D1jwLKAAC/3A+z
+  </chunk>
+  </data>
+ </layer>
+ <layer id="8" name="input_autoGround" width="67" height="67" opacity="0.45">
+  <properties>
+   <property name="StrictEmpty" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYMAEjFjE8MkTw2fEwx9oQMi9+NQzMqCqx8Un1mxi3UdNgM//hNxPrv8JqR9M6WM4AwB0NAAx
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYGBgYIRiXACfHEyeEY2PTz+p9hHiUxuQ4l5GNHlS+bjsI9c9pAJc7sNlF7H+I1Y9LjeRwh8F5AMAjOgAOQ==
+  </chunk>
+   <chunk x="32" y="0" width="16" height="16">
+   eJxjYGBgYGRABYxYxNDl8aknh0+J+ZQCSvzPyICqHhcfn9n41NDD78T4h1T1hPQTmz5o7f+RDgCseABF
+  </chunk>
+   <chunk x="48" y="0" width="16" height="16">
+   eJxjYGBgYIRiXACfHEyeEQsbHx+fmoEG6G7B5z50/5DLx2UXMeFHCSDWPdTyPy79xJo3CqgLAJ8AAEA=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="7" name="output_ground" width="67" height="67">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjYKAcMKLxmdD4zGh8FirYOZiAIBpfCI0vjMYXoaFbBgIoovGV0PjKaHwVGrplFJAGAM1XAN8=
+  </chunk>
+   <chunk x="16" y="0" width="16" height="16">
+   eJxjYKAcsKLx2dD47Gh8DirYOZiAKBpfDI0vjsaXoKFbBgKoovHV0PjqaHwNGrplFJAGAEwmAQ8=
+  </chunk>
+   <chunk x="32" y="0" width="16" height="16">
+   eJxjYKAccKLxudD43Gh8HirYOZiAJBpfCo0vjcaXoaFbBgJoovG10PjaaHwdGrplFJAGAMrmAT8=
+  </chunk>
+   <chunk x="48" y="0" width="16" height="16">
+   eJxjYKAc8KLx+dD4/Gh8ASrYOZiALBpfDo0vj8ZXoJ1TBgToovH10Pj69HLIKCAZAAD/ZgE/
+  </chunk>
+  </data>
+ </layer>
+</map>

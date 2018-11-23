@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="51" height="51" tilewidth="16" tileheight="16" infinite="1" nextlayerid="5" nextobjectid="1">
+ <properties>
+  <property name="DeleteTiles" type="bool" value="true"/>
+ </properties>
+ <tileset firstgid="1" source="../collisions.tsx"/>
+ <tileset firstgid="3" source="../autotiles_full.tsx"/>
+ <layer id="1" name="regions" width="51" height="51">
+  <data encoding="base64" compression="zlib">
+   <chunk x="0" y="0" width="16" height="16">
+   eJxjZBgFo2AUjFQAAAgAAAI=
+  </chunk>
+  </data>
+ </layer>
+ <layer id="2" name="inputnot_ground" width="51" height="51">
+  <properties>
+   <property name="StrictEmpty" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib"/>
+ </layer>
+ <layer id="4" name="input_autoGround" width="51" height="51">
+  <data encoding="base64" compression="zlib"/>
+ </layer>
+ <layer id="3" name="output_ground" width="51" height="51">
+  <properties>
+   <property name="StrictEmpty" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib"/>
+ </layer>
+</map>

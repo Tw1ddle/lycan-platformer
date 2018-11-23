@@ -20,7 +20,7 @@ class PhysicsTestState extends LycanState {
 		
 		populateWorld();
 		
-		player = new Player(Std.int(FlxG.width / 2), Std.int(FlxG.height - 350), 30, 100);
+		player = new Player(Std.int(FlxG.width / 2) - 200, Std.int(FlxG.height - 350), 30, 100);
 		add(player);
 		
 		#if flash
@@ -30,11 +30,17 @@ class PhysicsTestState extends LycanState {
 		#end
 		
 		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
-        player.physics.updatePosition();
+        player.physics.snapEntityToBody();
         FlxG.camera.snapToTarget();
 		
 		uiGroup.add(new FpsText(0, 0, 24));
 		
+		for (i in 0...6) {
+			var b:PhysSprite = cast add(new PhysSprite(Std.int(player.physics.body.position.x + 50 + 50 * i + 1), 200, 50, 50));
+			b.physics.body.allowRotation = false;
+			b.physics.setBodyMaterial(0, 1, 2);
+		}
+	
 		Phys.drawDebug = false;
 	}
 	

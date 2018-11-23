@@ -41,6 +41,8 @@ class TiledTestState extends LycanState {
 		setupUI();
         initPhysics();
 		
+		FlxG.fixedTimestep = false;
+		
 		overlay.color = FlxColor.RED;
 
 		loadWorld();
@@ -106,7 +108,7 @@ class TiledTestState extends LycanState {
 		});
 
 		loader.addByType("player", (obj, layer)->{
-			player = new Player(obj.x, obj.y, 15, 40);
+			player = new Player(obj.x, obj.y, 30, 60);
 			// TODO I think this won't be positioning the body properly
 			// Perhaps we need to readd a setPositon for bodies from flixel coords?
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
@@ -163,6 +165,7 @@ class TiledTestState extends LycanState {
 		}
 		
 		obj.physics.body.type = BodyType.STATIC;
+		obj.physics.setBodyMaterial(0, 0);
 
 		add(collisionGroup);
 		add(world);

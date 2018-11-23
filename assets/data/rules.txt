@@ -1,0 +1,2 @@
+rules/rule_deleteall.tmx
+rules/rule_fullauto.tmx

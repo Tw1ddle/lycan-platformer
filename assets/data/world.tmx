@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="120" height="55" tilewidth="16" tileheight="16" infinite="0" nextlayerid="12" nextobjectid="108">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="120" height="55" tilewidth="16" tileheight="16" infinite="0" nextlayerid="67" nextobjectid="108">
  <tileset firstgid="1" name="Collision" tilewidth="16" tileheight="16" tilecount="2" columns="2">
   <image source="../images/collisions.png" width="32" height="16"/>
  </tileset>
+ <tileset firstgid="3" source="autotiles_full.tsx"/>
  <layer id="4" name="Collisions" width="120" height="55" opacity="0.26">
   <properties>
    <property name="collision" value=""/>
@@ -215,6 +216,19 @@
    </properties>
   </object>
  </objectgroup>
+ <layer id="66" name="autoGround" width="120" height="55">
+  <data encoding="base64" compression="zlib">
+   eJzt07EKgEAMRMGD+/9/trGSU9TKXWcgRUj5yBgAAAAAAJBr7nO2k2cu5ngj06rtVW+y6NvrbluNM73tq3eGp339dBZ9u+nbTdtu2nbTt5uu3TT9B10BAAAAAAAAAAAAAAAAvmsDgT4CJg==
+  </data>
+ </layer>
+ <layer id="65" name="ground" width="120" height="55">
+  <properties>
+   <property name="StrictEmpty" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJzt1kEKwjAQQNHsXIkncCOKG0V7/8vZoIVQojYVpFPeg1mEbgqfaZoSAAAAAADEte1n/+FMPLnh4TXHfq7Fs93oTCy5bW7aFXNP73sTS97P7svoG1Ntd2uT99kdHM+U3a3tsH+uGFr6ju9kO718LX3dy/H80vfWz+n/r0yDuX21jWFuX9/lGFr75r09J7sbxZS+Q1Nd49mkZ7dLsqtrNnQuR1cAAAAAAAAAAAAAAACAZXgAGgkeuA==
+  </data>
+ </layer>
  <objectgroup id="11" name="OneWays">
   <properties>
    <property name="defaultType" value="oneway"/>
