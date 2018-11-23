@@ -75,7 +75,10 @@ class TiledTestState extends LycanState {
 	private function initPhysics():Void {
 		Phys.init();
 		Phys.drawDebug = true;
+		
+		#if !FLX_NO_DEBUG
 		Phys.enableDebugManipulator = true;
+		#end
 	}
 
 	private function destroyPhysics():Void {
