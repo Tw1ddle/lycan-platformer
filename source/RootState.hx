@@ -1,20 +1,25 @@
 package;
 
-import lycan.states.LycanState;
 import flixel.FlxG;
 import flixel.system.scaleModes.RatioScaleMode;
-import lycan.states.LycanRootState;
 import lycan.core.LG;
+import lycan.states.LycanRootState;
+import lycan.states.LycanState;
 
 class RootState extends LycanRootState {
 	
-	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState];
+	var testStates:Array<Class<LycanState>> = [TiledTestState];
 	var currentTestState:Int = 0;
 	
 	public function new() {
 		super();
 		persistentUpdate = true;
 		destroySubStates = true;
+		
+		// Only use system cursor in browser, otherwise you see both
+		#if html5
+		FlxG.mouse.useSystemCursor = true;
+		#end
 	}
 	
 	override public function create():Void {

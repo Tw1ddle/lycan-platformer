@@ -1,24 +1,21 @@
 package;
 
-import flixel.util.typeLimit.OneOfTwo;
-import nape.shape.Polygon;
-import lycan.entities.LSprite;
-import lycan.world.ObjectLoader;
-import nape.phys.BodyType;
 import flixel.FlxCamera.FlxCameraFollowStyle;
-import flixel.addons.editors.tiled.TiledObject;
-import lycan.world.layer.TileLayer;
-import lycan.world.World;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.FlxG;
+import flixel.addons.editors.tiled.TiledObject;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import flixel.util.FlxSignal.FlxTypedSignal;
+import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
-import flixel.util.FlxSignal;
-import lycan.world.layer.ObjectLayer;
+import lycan.world.World;
 import lycan.world.components.PhysicsEntity;
+import lycan.world.layer.TileLayer;
+import nape.phys.BodyType;
+import nape.shape.Polygon;
 
 using lycan.world.ObjectLoader;
 
@@ -120,7 +117,7 @@ class TiledTestState extends LycanState {
 			// Camera follows the player
 			// TODO this would need the updatePosition thing, and I think it probably wouldn't belong in a deault loader
 			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
-			FlxG.camera.snapToTarget();	
+			FlxG.camera.snapToTarget();
 		});
 
 		loader.addByType("crate", (obj, layer)->{
@@ -149,12 +146,10 @@ class TiledTestState extends LycanState {
 		
 		// TODO ditch this?
 		collisionLayer = cast world.getLayer("Collisions");
-
-
+		
 		var tm = collisionLayer.tilemap;
 		
 		// TODO use FlxNapeTilemap instead, refactor TileMap.hx
-		var zoomedSize = 16 * spriteZoom;
 		var obj:BasicPhysSprite = new BasicPhysSprite();
 		obj.physics.init(null, false);
 		for (h in 0...tm.heightInTiles) {
