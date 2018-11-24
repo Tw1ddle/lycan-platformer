@@ -2,7 +2,6 @@ package;
 
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.addons.nape.FlxNapeTilemap;
@@ -23,9 +22,7 @@ import lycan.world.TileSetLoader.TileSetHandler;
 import lycan.world.World;
 import lycan.world.components.PhysicsEntity;
 import lycan.world.layer.TileLayer;
-import nape.phys.BodyType;
 import nape.phys.Material;
-import nape.shape.Polygon;
 import openfl.display.BitmapData;
 
 using lycan.world.ObjectLoader;
