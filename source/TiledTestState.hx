@@ -2,15 +2,18 @@ package;
 
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
+import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
+import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
 import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
-import lycan.world.TileLayerLoader.TileLayerHandler;
 import lycan.world.World;
 import lycan.world.components.PhysicsEntity;
 import lycan.world.layer.TileLayer;
@@ -18,19 +21,16 @@ import nape.phys.BodyType;
 import nape.shape.Polygon;
 
 using lycan.world.ObjectLoader;
+using lycan.world.TileLayerLoader;
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
     var player:Player = null;
-	var collisionLayer:TileLayer = null;
 	var world:World = null;
 
 	// Groups
 	var onewayGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
 	var crateGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
-
-	// TODO remove
-	var collisionGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
 
 	override public function create():Void {
 		super.create();
@@ -138,32 +138,54 @@ class TiledTestState extends LycanState {
 			//onewayGroup.add(oneway);
 		});
 		
-		var tileLayerLoader = new FlxTypedSignal<TileLayerHandler>();
-		
-		world.load("assets/data/world.tmx", objectLoader, tileLayerLoader);
-		
-		// TODO ditch this?
-		collisionLayer = cast world.getLayer("Collisions");
-		
-		var tm = collisionLayer.tilemap;
-		
-		// TODO use FlxNapeTilemap instead, refactor TileMap.hx
-		var obj:BasicPhysSprite = new BasicPhysSprite();
-		obj.physics.init(null, false);
-		for (h in 0...tm.heightInTiles) {
-			for (w in 0...tm.widthInTiles) {
-				var tile = collisionLayer.data[w + (tm.widthInTiles * h)];
-				if (tile != 0) {
-					@:privateAccess(flixel.tile.FlxTilemap) obj.physics.body.shapes.add(new Polygon(Polygon.rect(
-						w * tm._tileWidth * spriteZoom, h * tm._tileHeight * spriteZoom, tm._tileWidth * spriteZoom, tm._tileHeight * spriteZoom)));
+		var tileLayerHandler:TileLayerHandler = function(tiledLayer:TiledTileLayer, layer:TileLayer):FlxTilemap {
+			
+			// TODO choose either nape, regular or other tilemap based on global properties, then map/world properties, then layer properties
+			var tilemap = new FlxTilemap();
+			
+			// TODO decide whether to do autotiling based on the map
+			// NOTE using using embedded assets is broken on html5
+			tilemap.loadMapFromArray(tiledLayer.tileArray, tiledLayer.map.width, tiledLayer.map.height, "assets/images/autotiles_full.png",
+				Std.int(tiledLayer.map.tileWidth), Std.int(tiledLayer.map.tileHeight), FlxTilemapAutoTiling.FULL, 1, 1, 1);
+			
+			// TODO decide scale based on layer info/properties?
+			tilemap.scale.copyFrom(world.scale);
+			
+			// TODO use FlxNapeTilemap instead
+			var obj:BasicPhysSprite = new BasicPhysSprite();
+			obj.physics.init(null, false);
+			
+			var tileData = tilemap.getData(false);
+			for (h in 0...tilemap.heightInTiles) {
+				for (w in 0...tilemap.widthInTiles) {
+					var tile = tileData[w + (tilemap.widthInTiles * h)];
+					if (tile != 0) {
+						@:privateAccess(flixel.tile.FlxTilemap) obj.physics.body.shapes.add(new Polygon(Polygon.rect(
+							w * tilemap._tileWidth * spriteZoom, h * tilemap._tileHeight * spriteZoom, tilemap._tileWidth * spriteZoom, tilemap._tileHeight * spriteZoom)));
+					}
 				}
 			}
-		}
+			
+			obj.physics.body.type = BodyType.STATIC;
+			obj.physics.setBodyMaterial(0, 0);
+			
+			// TODO handle properties properly
+			if (tiledLayer.properties.contains("collides")) {
+				tilemap.solid = true;
+				world.collidableTilemaps.push(tilemap);
+				if (tiledLayer.properties.get("collides") == "oneway") {
+					tilemap.allowCollisions = FlxObject.UP;
+				}
+			}
+			if (tiledLayer.properties.contains("hidden")) {
+				tilemap.visible = false;
+			}
+			
+			return tilemap;
+		};
 		
-		obj.physics.body.type = BodyType.STATIC;
-		obj.physics.setBodyMaterial(0, 0);
-
-		add(collisionGroup);
+		world.load("assets/data/world.tmx", objectLoader, tileLayerHandler);
+		
 		add(world);
 		add(onewayGroup);
 		add(crateGroup);
