@@ -2,7 +2,6 @@ package;
 
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
-import flixel.addons.editors.tiled.TiledObject;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
@@ -11,6 +10,7 @@ import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
+import lycan.world.TileLayerLoader.TileLayerHandler;
 import lycan.world.World;
 import lycan.world.components.PhysicsEntity;
 import lycan.world.layer.TileLayer;
@@ -85,7 +85,7 @@ class TiledTestState extends LycanState {
 	private function loadWorld():Void {
 		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
 
-		var loader = new FlxTypedSignal<ObjectHandler>();
+		var objectLoader = new FlxTypedSignal<ObjectHandler>();
 
 		// TODO Insert the object into the named objects map
 		//if (o.name != null && o.name != "") {
@@ -95,19 +95,15 @@ class TiledTestState extends LycanState {
 		//	world.namedObjects.set(o.name, object);
 		//}
 
-		var matchType = function(type:String, obj:TiledObject) {
-			return obj.type == type;
-		};
-
 		// Scale everything up
-		loader.add((obj, layer)->{
+		objectLoader.add((obj, layer)->{
 			obj.width *= spriteZoom;
 			obj.height *= spriteZoom;
 			obj.x *= spriteZoom;
 			obj.y *= spriteZoom;
 		});
 
-		loader.addByType("player", (obj, layer)->{
+		objectLoader.addByType("player", (obj, layer)->{
 			player = new Player(obj.x, obj.y, 30, 60);
 			// TODO I think this won't be positioning the body properly
 			// Perhaps we need to readd a setPositon for bodies from flixel coords?
@@ -120,29 +116,31 @@ class TiledTestState extends LycanState {
 			FlxG.camera.snapToTarget();
 		});
 
-		loader.addByType("crate", (obj, layer)->{
+		objectLoader.addByType("crate", (obj, layer)->{
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
 			//crateGroup.add(crate);
 		});
 
-		loader.addByType("movingPlatform", (obj, layer)->{
+		objectLoader.addByType("movingPlatform", (obj, layer)->{
 			// TODO
 		});
 
-		loader.addByType("switch", (obj, layer)->{
+		objectLoader.addByType("switch", (obj, layer)->{
 			// TODO
 		});
 
-		loader.addByType("button", (obj, layer)->{
+		objectLoader.addByType("button", (obj, layer)->{
 			// TODO
 		});
 
-		loader.addByType("oneway", (obj, layer)->{
+		objectLoader.addByType("oneway", (obj, layer)->{
 			//var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
 			//onewayGroup.add(oneway);
 		});
 		
-		world.load("assets/data/world.tmx", loader);
+		var tileLayerLoader = new FlxTypedSignal<TileLayerHandler>();
+		
+		world.load("assets/data/world.tmx", objectLoader, tileLayerLoader);
 		
 		// TODO ditch this?
 		collisionLayer = cast world.getLayer("Collisions");
