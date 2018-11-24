@@ -3,32 +3,38 @@ package;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledTileLayer;
+import flixel.addons.nape.FlxNapeTilemap;
+import flixel.graphics.frames.FlxTileFrames;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
+import flixel.system.FlxAssets;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxColor;
 import flixel.util.FlxSignal.FlxTypedSignal;
+import haxe.io.Path;
 import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
+import lycan.world.TileSetLoader.TileSetHandler;
 import lycan.world.World;
 import lycan.world.components.PhysicsEntity;
 import lycan.world.layer.TileLayer;
 import nape.phys.BodyType;
+import nape.phys.Material;
 import nape.shape.Polygon;
+import openfl.display.BitmapData;
 
 using lycan.world.ObjectLoader;
 using lycan.world.TileLayerLoader;
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
-    var player:Player = null;
 	var world:World = null;
 
-	// Groups
 	var onewayGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
 	var crateGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
 
@@ -36,7 +42,7 @@ class TiledTestState extends LycanState {
 		super.create();
 		
 		setupUI();
-        initPhysics();
+		initPhysics();
 		
 		FlxG.fixedTimestep = false;
 		
@@ -54,15 +60,10 @@ class TiledTestState extends LycanState {
 	
 	override public function update(dt:Float):Void {
 		super.update(dt);
-
-		handleInput(dt);
 	}
 	
 	override public function draw():Void {
 		super.draw();
-	}
-
-	private function handleInput(dt:Float):Void {
 	}
 
 	private function setupUI():Void {
@@ -83,18 +84,38 @@ class TiledTestState extends LycanState {
 	}
 
 	private function loadWorld():Void {
+		// TODO factor most of these functions out into helper functions in lycan
+		
 		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
-
+		
+		var tileSetHandler:TileSetHandler = function(tiledMap:TiledMap) {
+			// Load tileset graphics
+			var tilesetBitmaps = new Array<BitmapData>();
+			for (tileset in tiledMap.tilesetArray) {
+				// TODO might require attention later
+				if (tileset.properties.contains("noload")) continue;
+				var imagePath = new Path(tileset.imageSource);
+				var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;
+				tilesetBitmaps.push(FlxAssets.getBitmapData(processedPath));
+			}
+			
+			if (tilesetBitmaps.length == 0) {
+				throw "Cannot load an empty tilemap, as it will result in invalid bitmap data errors";
+			}
+			
+			// Combine tilesets into single tileset
+			var tileSize:FlxPoint = FlxPoint.get(tiledMap.tileWidth, tiledMap.tileHeight);
+			var spacing:FlxPoint = FlxPoint.get(2, 2);
+			world.combinedTileset = FlxTileFrames.combineTileSets(tilesetBitmaps, tileSize, spacing, spacing);
+			tileSize.put();
+			spacing.put();
+			
+			// Save a reference to the tileset map
+			world.namedTilesets = tiledMap.tilesets;
+		};
+		
 		var objectLoader = new FlxTypedSignal<ObjectHandler>();
-
-		// TODO Insert the object into the named objects map
-		//if (o.name != null && o.name != "") {
-		//	if (world.namedObjects.exists(o.name)) {
-		//		throw("Error loading world. Object names must be unique: " + o.name);
-		//	}
-		//	world.namedObjects.set(o.name, object);
-		//}
-
+		
 		// Scale everything up
 		objectLoader.add((obj, layer)->{
 			obj.width *= spriteZoom;
@@ -104,7 +125,7 @@ class TiledTestState extends LycanState {
 		});
 
 		objectLoader.addByType("player", (obj, layer)->{
-			player = new Player(obj.x, obj.y, 30, 60);
+			var player = new Player(obj.x, obj.y, 30, 60);
 			// TODO I think this won't be positioning the body properly
 			// Perhaps we need to readd a setPositon for bodies from flixel coords?
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
@@ -140,51 +161,72 @@ class TiledTestState extends LycanState {
 		
 		var tileLayerHandler:TileLayerHandler = function(tiledLayer:TiledTileLayer, layer:TileLayer):FlxTilemap {
 			
-			// TODO choose either nape, regular or other tilemap based on global properties, then map/world properties, then layer properties
-			var tilemap = new FlxTilemap();
+			var layerProperties = tiledLayer.properties;
 			
-			// TODO decide whether to do autotiling based on the map
-			// NOTE using using embedded assets is broken on html5
+			var key = (p:String)->{
+				return layerProperties.contains(p);
+			}
+			var val = (p:String)->{
+				return layerProperties.get(p);
+			}
+			
+			// TODO have engine specific properties for physics
+			var tilemap:FlxTilemap = function():FlxTilemap {
+				if (key("collision")) {
+					return new FlxNapeTilemap();
+				}
+				return new FlxTilemap();
+			}();
+			
+			// TODO decide whether to do autotiling based on the map/layer properties
+			// NOTE using using embedded assets here was broken on html5
 			tilemap.loadMapFromArray(tiledLayer.tileArray, tiledLayer.map.width, tiledLayer.map.height, "assets/images/autotiles_full.png",
-				Std.int(tiledLayer.map.tileWidth), Std.int(tiledLayer.map.tileHeight), FlxTilemapAutoTiling.FULL, 1, 1, 1);
+				Std.int(tiledLayer.map.tileWidth), Std.int(tiledLayer.map.tileHeight), FlxTilemapAutoTiling.FULL, 0, 0, 0);
 			
-			// TODO decide scale based on layer info/properties?
+			// TODO decide scale based on layer info/properties, not world?
 			tilemap.scale.copyFrom(world.scale);
 			
-			// TODO use FlxNapeTilemap instead
-			var obj:BasicPhysSprite = new BasicPhysSprite();
-			obj.physics.init(null, false);
+			if (key("hidden")) {
+				tilemap.visible = false;
+			}
 			
-			var tileData = tilemap.getData(false);
-			for (h in 0...tilemap.heightInTiles) {
-				for (w in 0...tilemap.widthInTiles) {
-					var tile = tileData[w + (tilemap.widthInTiles * h)];
-					if (tile != 0) {
-						@:privateAccess(flixel.tile.FlxTilemap) obj.physics.body.shapes.add(new Polygon(Polygon.rect(
-							w * tilemap._tileWidth * spriteZoom, h * tilemap._tileHeight * spriteZoom, tilemap._tileWidth * spriteZoom, tilemap._tileHeight * spriteZoom)));
+			if (key("collision")) {
+				var napeMap:FlxNapeTilemap = cast tilemap;
+				
+				napeMap.setupCollideIndex(1, new Material(0, 0, 2, 1, 0.001));
+				napeMap.body.scaleShapes(world.scale.x, world.scale.y);
+				napeMap.body.space = Phys.space;
+				
+				/*
+				var obj:BasicPhysSprite = new BasicPhysSprite();
+				obj.physics.init(null, false);
+				var tileData = tilemap.getData(false);
+				for (h in 0...tilemap.heightInTiles) {
+					for (w in 0...tilemap.widthInTiles) {
+						var tile = tileData[w + (tilemap.widthInTiles * h)];
+						if (tile != 0) {
+							@:privateAccess(flixel.tile.FlxTilemap) obj.physics.body.shapes.add(new Polygon(Polygon.rect(
+								w * tilemap._tileWidth * spriteZoom, h * tilemap._tileHeight * spriteZoom, tilemap._tileWidth * spriteZoom, tilemap._tileHeight * spriteZoom)));
+						}
 					}
 				}
-			}
-			
-			obj.physics.body.type = BodyType.STATIC;
-			obj.physics.setBodyMaterial(0, 0);
-			
-			// TODO handle properties properly
-			if (tiledLayer.properties.contains("collides")) {
+				obj.physics.body.type = BodyType.STATIC;
+				obj.physics.setBodyMaterial(0, 0);
+				*/
+				
 				tilemap.solid = true;
 				world.collidableTilemaps.push(tilemap);
-				if (tiledLayer.properties.get("collides") == "oneway") {
-					tilemap.allowCollisions = FlxObject.UP;
-				}
-			}
-			if (tiledLayer.properties.contains("hidden")) {
-				tilemap.visible = false;
 			}
 			
 			return tilemap;
 		};
 		
-		world.load("assets/data/world.tmx", objectLoader, tileLayerHandler);
+		// Set camera scroll bounds after loading
+		world.onLoadingComplete.add(()-> {
+			FlxG.camera.setScrollBoundsRect(0, 0, world.width * world.scale.x, world.height * world.scale.y, true);
+		});
+		
+		world.load("assets/data/world.tmx", tileSetHandler, objectLoader, tileLayerHandler);
 		
 		add(world);
 		add(onewayGroup);
