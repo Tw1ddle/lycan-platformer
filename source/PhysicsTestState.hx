@@ -12,6 +12,7 @@ import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
 import lycan.supply.Node;
+import lycan.phys.PlatformerPhysics;
 
 class PhysicsTestState extends LycanState {
     var player:Player;
@@ -22,6 +23,8 @@ class PhysicsTestState extends LycanState {
 	var n3:Node;
 	var e1:Edge;
 	var e2:Edge;
+	var tl1:TimelineSprite;
+	var tl2:TimelineSprite;
 
 	override public function create():Void {
 		super.create();
@@ -51,8 +54,8 @@ class PhysicsTestState extends LycanState {
 		uiGroup.add(new FpsText(0, 0, 24));
 		
 		
-		var tl1:TimelineSprite = cast uiGroup.add(new TimelineSprite(100, 100));
-		var tl2:TimelineSprite = cast uiGroup.add(new TimelineSprite(100, 400));
+		tl1 = cast uiGroup.add(new TimelineSprite(100, 100));
+		tl2 = cast uiGroup.add(new TimelineSprite(100, 400));
 		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, (e:KeyboardEvent)->{
 			if (e.keyCode == Keyboard.D) {
 				tl1.timeline = tl1.timeline.difference(tl2.timeline);
@@ -83,8 +86,8 @@ class PhysicsTestState extends LycanState {
 			b.physics.body.allowRotation = false;
 			b.physics.setBodyMaterial(0, 1, 2);
 		}
-	
-		Phys.drawDebug = false;
+		
+		PlatformerPhysics.setupPlatformerPhysics();
 	}
 	
 	override public function destroy():Void {
@@ -102,11 +105,15 @@ class PhysicsTestState extends LycanState {
 			
 			FlxG.watch.addQuick("s", "t");
 		} else  FlxG.watch.addQuick("s","f");
-		FlxG.watch.addQuick("n1", n1.signalOn);
+		
+		FlxG.watch.addQuick("n1", n1.signalOn + " " + n1.propagation);
 		FlxG.watch.addQuick("e1 prop", e1.propagation);
 		FlxG.watch.addQuick("n2", n1.signalOn);
 		FlxG.watch.addQuick("e2 prop", e2.propagation);
 		FlxG.watch.addQuick("n3", n1.signalOn);
+		
+		//@:privateAccess tl1.timeline = n1.inputTimeline;
+		//@:privateAccess tl2.timeline = n1.propagationTimeline;
 	}
 	
 	override public function draw():Void {

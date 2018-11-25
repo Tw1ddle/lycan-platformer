@@ -10,5 +10,6 @@ class PhysSprite extends LSprite implements PhysicsEntity {
 		makeGraphic(width, height, FlxColor.fromRGB(255, 0, 64, 128));
 		//pixelPerfectPosition = true;
 		physics.init();
+		
 	}
 }

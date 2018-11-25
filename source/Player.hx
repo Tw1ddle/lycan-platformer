@@ -1,5 +1,6 @@
 package;
 
+import lycan.phys.PlatformerPhysics;
 import nape.phys.Material;
 import nape.shape.Polygon;
 import nape.geom.Vec2;
@@ -51,6 +52,8 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		physics.body.shapes.add(bodyShape);
 		physics.setBodyMaterial();
 		// //feetShape.
+		
+		physics.body.cbTypes.add(PlatformerPhysics.groundableType);
 	}
 	
 	override public function update(dt:Float):Void {
@@ -75,7 +78,6 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		}
 		
 		FlxG.watch.addQuick("grounded", groundable.isGrounded);
-		groundable.forceGrounded = true;
 		if (groundable.isGrounded && !running) {
 			feetShape.material.dynamicFriction = 100;
 			feetShape.material.staticFriction = 100;
