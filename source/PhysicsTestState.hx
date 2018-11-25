@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 import openfl.ui.Keyboard;
 import flash.events.KeyboardEvent;
 import flash.automation.KeyboardAutomationAction;
@@ -86,6 +87,11 @@ class PhysicsTestState extends LycanState {
 			b.physics.body.allowRotation = false;
 			b.physics.setBodyMaterial(0, 1, 2);
 		}
+		
+		var b:PhysSprite = cast add(new PhysSprite(400, Std.int(player.physics.body.position.y - 100), 200, 100));
+		b.physics.body.type = BodyType.STATIC;
+		b.physics.body.cbTypes.add(PlatformerPhysics.onewayType);
+		b.allowCollisions = FlxObject.FLOOR;
 		
 		PlatformerPhysics.setupPlatformerPhysics();
 	}

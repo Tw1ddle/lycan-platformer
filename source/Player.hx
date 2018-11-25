@@ -1,5 +1,7 @@
 package;
 
+import nape.phys.Body;
+import flixel.math.FlxMath;
 import lycan.phys.PlatformerPhysics;
 import nape.phys.Material;
 import nape.shape.Polygon;
@@ -22,9 +24,18 @@ import lycan.phys.Phys;
 class MovingPlatform {}
 
 class Player extends LSprite implements PhysicsEntity implements Groundable {
-	var jumpSpeed:Float = -800;
+	var jumpSpeed:Float = -1200;
 	var runImpulse:Float = 1000;
 	var runSpeed:Float = 500;
+	var maxJumps:Int = 2;
+	var maxJumpVelY:Float = 200;
+	var airDrag:Float = 2500;
+	
+	/** Indicates how in control the character is. Applies high drag while in air. */
+	var hasControl:Bool;
+	var currentJumps:Int;
+	var canJump:Bool;
+	
 	var movingPlatforms:Array<MovingPlatform>;
 	var currentMovingPlatform:MovingPlatform;
 	
@@ -53,6 +64,9 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		physics.setBodyMaterial();
 		// //feetShape.
 		
+		hasControl = true;
+		currentJumps = 0;
+		
 		physics.body.cbTypes.add(PlatformerPhysics.groundableType);
 	}
 	
@@ -65,7 +79,7 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 			running = true;
 		} else if (physics.body.velocity.x < runSpeed && FlxG.keys.anyPressed([FlxKey.D, FlxKey.RIGHT])) {
 			physics.body.applyImpulse(Vec2.weak(runImpulse, 0));
-			running = true;
+			running = true;//TODO rename to moving
 		}
 		if (FlxG.keys.anyPressed([A, LEFT, RIGHT, D])) running = true;
 		
@@ -88,8 +102,26 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		
 		FlxG.watch.addQuick("feet friction", feetShape.material.dynamicFriction);
 		
-		if (FlxG.keys.anyPressed([FlxKey.W, FlxKey.UP])) {
-			if (groundable.isGrounded) {// TODO condition
+		var body:Body = physics.body;
+		
+		if (groundable.isGrounded) {
+			currentJumps = 0;
+			canJump = true;
+		} else {
+			if (hasControl && !running) {
+				var vx:Float = body.velocity.x;
+				body.velocity.x -= FlxMath.signOf(vx) * Math.min(dt * airDrag, Math.abs(vx));
+			}
+		}
+		
+		if (currentJumps >= maxJumps || (body.velocity.y > maxJumpVelY && !groundable.isGrounded)) {
+			canJump = false;
+		}
+		
+		
+		if (FlxG.keys.anyJustPressed([FlxKey.W, FlxKey.UP])) {
+			if (canJump) {
+				currentJumps++;
 				physics.body.velocity.y = jumpSpeed;
 			}
 		}
