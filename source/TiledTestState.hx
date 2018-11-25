@@ -113,6 +113,9 @@ class TiledTestState extends LycanState {
 		
 		var objectLoader = new FlxTypedSignal<ObjectHandler>();
 		
+		// TODO write extension methods for ObjectHandler that let us easily wrap/bind stuff, so we can easily store
+		// (and later associate) objects that have names/specific properties
+		
 		// Scale everything up
 		objectLoader.add((obj, layer)->{
 			obj.width *= spriteZoom;
@@ -129,7 +132,7 @@ class TiledTestState extends LycanState {
 			add(player);
 
 			// Camera follows the player
-			// TODO this would need the updatePosition thing, and I think it probably wouldn't belong in a deault loader
+			// TODO this would need the updatePosition thing, and I think it probably wouldn't belong in a default loader
 			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
 			FlxG.camera.snapToTarget();
 		});
@@ -183,9 +186,7 @@ class TiledTestState extends LycanState {
 			// TODO decide scale based on layer info/properties, not world?
 			tilemap.scale.copyFrom(world.scale);
 			
-			if (key("hidden")) {
-				tilemap.visible = false;
-			}
+			tilemap.visible = key("hidden") ? false : true;
 			
 			if (key("collision")) {
 				var napeMap:FlxNapeTilemap = cast tilemap;
@@ -193,23 +194,6 @@ class TiledTestState extends LycanState {
 				napeMap.setupCollideIndex(1, new Material(0, 0, 2, 1, 0.001));
 				napeMap.body.scaleShapes(world.scale.x, world.scale.y);
 				napeMap.body.space = Phys.space;
-				
-				/*
-				var obj:BasicPhysSprite = new BasicPhysSprite();
-				obj.physics.init(null, false);
-				var tileData = tilemap.getData(false);
-				for (h in 0...tilemap.heightInTiles) {
-					for (w in 0...tilemap.widthInTiles) {
-						var tile = tileData[w + (tilemap.widthInTiles * h)];
-						if (tile != 0) {
-							@:privateAccess(flixel.tile.FlxTilemap) obj.physics.body.shapes.add(new Polygon(Polygon.rect(
-								w * tilemap._tileWidth * spriteZoom, h * tilemap._tileHeight * spriteZoom, tilemap._tileWidth * spriteZoom, tilemap._tileHeight * spriteZoom)));
-						}
-					}
-				}
-				obj.physics.body.type = BodyType.STATIC;
-				obj.physics.setBodyMaterial(0, 0);
-				*/
 				
 				tilemap.solid = true;
 				world.collidableTilemaps.push(tilemap);
