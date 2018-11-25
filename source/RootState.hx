@@ -27,8 +27,6 @@ class RootState extends LycanRootState {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		
-		LG.lateUpdate.dispatch(dt);
-		
 		if (FlxG.keys.justPressed.F1) {
 			currentTestState++;
 			if (currentTestState >= testStates.length) currentTestState = 0;

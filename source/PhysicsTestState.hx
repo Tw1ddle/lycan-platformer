@@ -1,5 +1,9 @@
 package;
 
+import openfl.ui.Keyboard;
+import flash.events.KeyboardEvent;
+import flash.automation.KeyboardAutomationAction;
+import flash.events.Event;
 import nape.geom.Vec2;
 import nape.phys.BodyType;
 import flixel.FlxCamera;
@@ -7,9 +11,17 @@ import flixel.FlxG;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
+import lycan.supply.Node;
 
 class PhysicsTestState extends LycanState {
     var player:Player;
+
+	var signalSystem:SignalSystem;
+	var n1:Node;
+	var n2:Node;
+	var n3:Node;
+	var e1:Edge;
+	var e2:Edge;
 
 	override public function create():Void {
 		super.create();
@@ -38,6 +50,34 @@ class PhysicsTestState extends LycanState {
 		
 		uiGroup.add(new FpsText(0, 0, 24));
 		
+		
+		var tl1:TimelineSprite = cast uiGroup.add(new TimelineSprite(100, 100));
+		var tl2:TimelineSprite = cast uiGroup.add(new TimelineSprite(100, 400));
+		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, (e:KeyboardEvent)->{
+			if (e.keyCode == Keyboard.D) {
+				tl1.timeline = tl1.timeline.difference(tl2.timeline);
+			}
+			if (e.keyCode == Keyboard.R) {
+				tl2.timeline.clear();
+			}
+			if (e.keyCode == Keyboard.A) {
+				tl1.timeline.add(tl2.timeline);
+			}
+		});
+		
+		signalSystem = new SignalSystem();
+		n1 = new Node();
+		n2 = new Node();
+		n3 = new Node();
+		e1 = new Edge(n1, n2);
+		e2 = new Edge(n2, n3);
+		signalSystem.nodes.add(n1);
+		signalSystem.nodes.add(n2);
+		signalSystem.nodes.add(n3);
+		signalSystem.edges.add(e1);
+		signalSystem.edges.add(e2);
+		add(signalSystem);
+		
 		for (i in 0...6) {
 			var b:PhysSprite = cast add(new PhysSprite(Std.int(player.physics.body.position.x + 50 + 50 * i + 1), 200, 50, 50));
 			b.physics.body.allowRotation = false;
@@ -55,6 +95,18 @@ class PhysicsTestState extends LycanState {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		handleInput(dt);
+		
+		// Playing with the supply network
+		if (FlxG.keys.pressed.SPACE) {
+			n1.addSignal();
+			
+			FlxG.watch.addQuick("s", "t");
+		} else  FlxG.watch.addQuick("s","f");
+		FlxG.watch.addQuick("n1", n1.signalOn);
+		FlxG.watch.addQuick("e1 prop", e1.propagation);
+		FlxG.watch.addQuick("n2", n1.signalOn);
+		FlxG.watch.addQuick("e2 prop", e2.propagation);
+		FlxG.watch.addQuick("n3", n1.signalOn);
 	}
 	
 	override public function draw():Void {

@@ -27,6 +27,7 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 	var movingPlatforms:Array<MovingPlatform>;
 	var currentMovingPlatform:MovingPlatform;
 	
+	var bodyShape:Shape;
 	var feetShape:Shape;
 	
 	public function new(x:Int, y:Int, width:Int, height:Int) {
@@ -45,8 +46,9 @@ class Player extends LSprite implements PhysicsEntity implements Groundable {
 		physics.body.position.setxy(x, y);
 		physics.body.allowRotation = false;
 		feetShape = new Circle(width / 2, Vec2.weak(0, (height - width) / 2));
+		bodyShape = new Polygon(Polygon.rect(-width / 2, -height / 2, width, height - width / 2));
 		physics.body.shapes.add(feetShape);
-		physics.body.shapes.add(new Polygon(Polygon.rect(-width / 2, -height / 2, width, height - width / 2)));
+		physics.body.shapes.add(bodyShape);
 		physics.setBodyMaterial();
 		// //feetShape.
 	}
