@@ -1,39 +1,34 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
-import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledTileLayer;
+import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.addons.nape.FlxNapeTilemap;
 import flixel.graphics.frames.FlxTileFrames;
-import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxPoint;
 import flixel.system.FlxAssets;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
-import flixel.util.FlxColor;
-import flixel.util.FlxSignal.FlxTypedSignal;
+import haxe.ds.Map;
 import haxe.io.Path;
-import lycan.entities.LSprite;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
-import lycan.world.TileSetLoader.TileSetHandler;
+import lycan.world.ObjectHandler.ObjectHandlers;
 import lycan.world.World;
-import lycan.world.components.PhysicsEntity;
+import lycan.world.layer.ObjectLayer;
 import lycan.world.layer.TileLayer;
 import nape.phys.Material;
 import openfl.display.BitmapData;
 
-using lycan.world.ObjectLoader;
-using lycan.world.TileLayerLoader;
+using lycan.world.TileLayerHandler;
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
 	var world:World = null;
-
-	var onewayGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
-	var crateGroup:FlxTypedGroup<PhysSprite> = new FlxTypedGroup<PhysSprite>();
+	var player:Player = null;
 
 	override public function create():Void {
 		super.create();
@@ -41,26 +36,14 @@ class TiledTestState extends LycanState {
 		setupUI();
 		initPhysics();
 		
-		FlxG.fixedTimestep = false;
-		
-		overlay.color = FlxColor.RED;
-
 		loadWorld();
 	}
 	
 	override public function destroy():Void {
 		FlxG.camera.follow(null);
-
+		
 		destroyPhysics();
 		super.destroy();
-	}
-	
-	override public function update(dt:Float):Void {
-		super.update(dt);
-	}
-	
-	override public function draw():Void {
-		super.draw();
 	}
 
 	private function setupUI():Void {
@@ -81,16 +64,21 @@ class TiledTestState extends LycanState {
 	}
 
 	private function loadWorld():Void {
-		// TODO factor most of these functions out into helper functions in lycan
+		world = new World(new FlxPoint(spriteZoom, spriteZoom));
 		
-		world = new World(FlxPoint.get(spriteZoom, spriteZoom));
+		var namedTileSets = new Map<String, TiledTileSet>();
+		var combinedTileSet:FlxTileFrames = null;
+		var namedObjectLayers = new Map<String, ObjectLayer>();
+		var namedTileLayers = new Map<String, TileLayer>();
+		var namedObjects = new Map<String, FlxBasic>();
 		
-		var tileSetHandler:TileSetHandler = function(tiledMap:TiledMap) {
+		world.onLoadedTileSets.add((tiledMap)-> {
 			// Load tileset graphics
 			var tilesetBitmaps = new Array<BitmapData>();
 			for (tileset in tiledMap.tilesetArray) {
-				// TODO might require attention later
-				if (tileset.properties.contains("noload")) continue;
+				if (tileset.properties.contains("noload")) {
+					continue;
+				}
 				var imagePath = new Path(tileset.imageSource);
 				var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;
 				tilesetBitmaps.push(FlxAssets.getBitmapData(processedPath));
@@ -103,60 +91,65 @@ class TiledTestState extends LycanState {
 			// Combine tilesets into single tileset
 			var tileSize:FlxPoint = FlxPoint.get(tiledMap.tileWidth, tiledMap.tileHeight);
 			var spacing:FlxPoint = FlxPoint.get(2, 2);
-			world.combinedTileset = FlxTileFrames.combineTileSets(tilesetBitmaps, tileSize, spacing, spacing);
+			combinedTileSet = FlxTileFrames.combineTileSets(tilesetBitmaps, tileSize, spacing, spacing);
 			tileSize.put();
 			spacing.put();
 			
-			// Save a reference to the tileset map
-			world.namedTilesets = tiledMap.tilesets;
-		};
+			namedTileSets = tiledMap.tilesets;
+		});
 		
-		var objectLoader = new FlxTypedSignal<ObjectHandler>();
+		world.afterLoadedObjectLayer.add((tiledLayer, layer)-> {
+			if (tiledLayer.name == null || tiledLayer.name == "") {
+				return;
+			}
+			namedObjectLayers.set(tiledLayer.name, layer);
+		});
 		
-		// TODO write extension methods for ObjectHandler that let us easily wrap/bind stuff, so we can easily store
-		// (and later associate) objects that have names/specific properties
+		world.afterLoadedTileLayer.add((tiledLayer, layer)-> {
+			if (tiledLayer.name == null || tiledLayer.name == "") {
+				return;
+			}
+			namedTileLayers.set(tiledLayer.name, layer);
+		});
+		
+		// TODO how to do overloading for handlers with different return types without need to have different method names?
+		var objectHandlers = new ObjectHandlers();
 		
 		// Scale everything up
-		objectLoader.add((obj, layer)->{
+		objectHandlers.addForAll((obj, layer)->{
 			obj.width *= spriteZoom;
 			obj.height *= spriteZoom;
 			obj.x *= spriteZoom;
 			obj.y *= spriteZoom;
 		});
-
-		objectLoader.addByType("player", (obj, layer)->{
+		
+		var addAndTrackByName = objectHandlers.addForTypeAndMap.bind(_, _, namedObjects);
+		addAndTrackByName("player", (obj, layer)->{
 			var player = new Player(obj.x, obj.y, 30, 60);
 			// TODO I think this won't be positioning the body properly
 			// Perhaps we need to readd a setPositon for bodies from flixel coords?
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
-			add(player);
-
-			// Camera follows the player
-			// TODO this would need the updatePosition thing, and I think it probably wouldn't belong in a default loader
-			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
-			FlxG.camera.snapToTarget();
+			return player;
 		});
-
-		objectLoader.addByType("crate", (obj, layer)->{
+		addAndTrackByName("crate", (obj, layer)->{
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
-			//crateGroup.add(crate);
+			return null;
 		});
-
-		objectLoader.addByType("movingPlatform", (obj, layer)->{
+		addAndTrackByName("movingPlatform", (obj, layer)->{
 			// TODO
+			return null;
 		});
-
-		objectLoader.addByType("switch", (obj, layer)->{
+		addAndTrackByName("switch", (obj, layer)->{
 			// TODO
+			return null;
 		});
-
-		objectLoader.addByType("button", (obj, layer)->{
+		addAndTrackByName("button", (obj, layer)->{
 			// TODO
+			return null;
 		});
-
-		objectLoader.addByType("oneway", (obj, layer)->{
+		addAndTrackByName("oneway", (obj, layer)->{
 			//var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
-			//onewayGroup.add(oneway);
+			return null;
 		});
 		
 		var tileLayerHandler:TileLayerHandler = function(tiledLayer:TiledTileLayer, layer:TileLayer):FlxTilemap {
@@ -173,13 +166,15 @@ class TiledTestState extends LycanState {
 			// TODO have engine specific properties for physics
 			var tilemap:FlxTilemap = function():FlxTilemap {
 				if (key("collision")) {
+					if (val("collision") == "nape") {
+						// TODO?
+					}
 					return new FlxNapeTilemap();
 				}
 				return new FlxTilemap();
 			}();
 			
 			// TODO decide whether to do autotiling based on the map/layer properties
-			// NOTE using using embedded assets here was broken on html5
 			tilemap.loadMapFromArray(tiledLayer.tileArray, tiledLayer.map.width, tiledLayer.map.height, "assets/images/autotiles_full.png",
 				Std.int(tiledLayer.map.tileWidth), Std.int(tiledLayer.map.tileHeight), FlxTilemapAutoTiling.FULL, 0, 0, 0);
 			
@@ -196,7 +191,6 @@ class TiledTestState extends LycanState {
 				napeMap.body.space = Phys.space;
 				
 				tilemap.solid = true;
-				world.collidableTilemaps.push(tilemap);
 			}
 			
 			return tilemap;
@@ -204,15 +198,19 @@ class TiledTestState extends LycanState {
 		
 		// Set camera scroll bounds after loading
 		world.onLoadingComplete.add(()-> {
+			trace(namedObjects);
+			
 			FlxG.camera.setScrollBoundsRect(0, 0, world.width * world.scale.x, world.height * world.scale.y, true);
+			player = cast namedObjects.get("player");
+			
+			// TODO this would need the updatePosition thing
+			Sure.sure(player != null);
+			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
+			FlxG.camera.snapToTarget();
+			
+			add(world);
 		});
 		
-		world.load("assets/data/world.tmx", tileSetHandler, objectLoader, tileLayerHandler);
-		
-		add(world);
-		add(onewayGroup);
-		add(crateGroup);
+		world.load("assets/data/world.tmx", objectHandlers, tileLayerHandler);
 	}
 }
-
-class BasicPhysSprite extends LSprite implements PhysicsEntity {}
