@@ -82,10 +82,11 @@ class PhysicsTestState extends LycanState {
 		signalSystem.edges.add(e2);
 		add(signalSystem);
 		
+		// Make crates
 		for (i in 0...6) {
-			var b:PhysSprite = cast add(new PhysSprite(Std.int(player.physics.body.position.x + 50 + 50 * i + 1), 200, 50, 50));
+			var b:PhysSprite = cast add(new PhysSprite(Std.int(player.physics.body.position.x + 70 + 70 * i + 1), 400, 70, 70));
 			b.physics.body.allowRotation = false;
-			b.physics.setBodyMaterial(0, 1, 2);
+			b.physics.setBodyMaterial(0, 5, 5, 2);
 		}
 		
 		var b:PhysSprite = cast add(new PhysSprite(400, Std.int(player.physics.body.position.y - 100), 200, 100));
