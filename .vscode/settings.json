@@ -28,5 +28,6 @@
 	"lime.defaultTarget": "Neko",
 	"gitlens.codeLens.enabled": false,
 	"gitlens.currentLine.enabled": false,
-	"debug.openExplorerOnEnd": true
+	"debug.openExplorerOnEnd": true,
+	"editor.suggest.snippetsPreventQuickSuggestions": false
 }
