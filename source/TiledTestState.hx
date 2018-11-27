@@ -16,6 +16,7 @@ import haxe.io.Path;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
+import lycan.world.ObjectHandler;
 import lycan.world.ObjectHandler.ObjectHandlers;
 import lycan.world.World;
 import lycan.world.layer.ObjectLayer;
@@ -98,56 +99,59 @@ class TiledTestState extends LycanState {
 			namedTileSets = tiledMap.tilesets;
 		});
 		
-		world.afterLoadedObjectLayer.add((tiledLayer, layer)-> {
+		world.onLoadedObjectLayer.add((tiledLayer, layer)-> {
 			if (tiledLayer.name == null || tiledLayer.name == "") {
 				return;
 			}
 			namedObjectLayers.set(tiledLayer.name, layer);
 		});
 		
-		world.afterLoadedTileLayer.add((tiledLayer, layer)-> {
+		world.onLoadedTileLayer.add((tiledLayer, layer)-> {
 			if (tiledLayer.name == null || tiledLayer.name == "") {
 				return;
 			}
 			namedTileLayers.set(tiledLayer.name, layer);
 		});
 		
-		// TODO how to do overloading for handlers with different return types without need to have different method names?
 		var objectHandlers = new ObjectHandlers();
 		
+		// TODO is there any way around the single parameter limit for @:op?
+		// e.g. like by implementing @:from or @:to on the actual ObjectHandler so it's auto-converted there?
+		var pack = function(type:String, map:Map<String, FlxBasic>, handler:ObjectHandler) {
+			return { type: type, map: map, handler: handler };
+		};
+		
 		// Scale everything up
-		objectHandlers.addForAll((obj, layer)->{
+		objectHandlers += (obj, layer)->{
 			obj.width *= spriteZoom;
 			obj.height *= spriteZoom;
 			obj.x *= spriteZoom;
 			obj.y *= spriteZoom;
-		});
-		
-		var addAndTrackByName = objectHandlers.addForTypeAndMap.bind(_, _, namedObjects);
-		addAndTrackByName("player", (obj, layer)->{
+		};
+		objectHandlers += pack("player", namedObjects, (obj, layer)->{
 			var player = new Player(obj.x, obj.y, 30, 60);
 			// TODO I think this won't be positioning the body properly
 			// Perhaps we need to readd a setPositon for bodies from flixel coords?
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
 			return player;
 		});
-		addAndTrackByName("crate", (obj, layer)->{
+		objectHandlers += pack("crate", namedObjects, (obj, layer)->{
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
 			return null;
 		});
-		addAndTrackByName("movingPlatform", (obj, layer)->{
+		objectHandlers += pack("movingPlatform", namedObjects, (obj, layer)->{
 			// TODO
 			return null;
 		});
-		addAndTrackByName("switch", (obj, layer)->{
+		objectHandlers += pack("switch", namedObjects, (obj, layer)->{
 			// TODO
 			return null;
 		});
-		addAndTrackByName("button", (obj, layer)->{
+		objectHandlers += pack("button", namedObjects, (obj, layer)->{
 			// TODO
 			return null;
 		});
-		addAndTrackByName("oneway", (obj, layer)->{
+		objectHandlers += pack("oneway", namedObjects, (obj, layer)->{
 			//var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
 			return null;
 		});
@@ -196,10 +200,10 @@ class TiledTestState extends LycanState {
 			return tilemap;
 		};
 		
-		// Set camera scroll bounds after loading
 		world.onLoadingComplete.add(()-> {
 			trace(namedObjects);
 			
+			// Set camera scroll bounds after loading
 			FlxG.camera.setScrollBoundsRect(0, 0, world.width * world.scale.x, world.height * world.scale.y, true);
 			player = cast namedObjects.get("player");
 			
