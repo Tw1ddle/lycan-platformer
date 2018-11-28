@@ -2,13 +2,12 @@ package;
 
 import flixel.FlxG;
 import flixel.system.scaleModes.RatioScaleMode;
-import lycan.core.LG;
 import lycan.states.LycanRootState;
 import lycan.states.LycanState;
 
 class RootState extends LycanRootState {
 	
-	var testStates:Array<Class<LycanState>> = [PhysicsTestState];
+	var testStates:Array<Class<LycanState>> = [PhysicsTestState, TiledTestState];
 	var currentTestState:Int = 0;
 	
 	public function new() {

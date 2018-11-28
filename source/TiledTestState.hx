@@ -3,16 +3,13 @@ package;
 import flixel.FlxBasic;
 import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
+import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledTileLayer;
-import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.addons.nape.FlxNapeTilemap;
-import flixel.graphics.frames.FlxTileFrames;
 import flixel.math.FlxPoint;
-import flixel.system.FlxAssets;
 import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.tile.FlxTilemap;
 import haxe.ds.Map;
-import haxe.io.Path;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
@@ -22,7 +19,6 @@ import lycan.world.World;
 import lycan.world.layer.ObjectLayer;
 import lycan.world.layer.TileLayer;
 import nape.phys.Material;
-import openfl.display.BitmapData;
 
 using lycan.world.TileLayerHandler;
 
@@ -67,94 +63,48 @@ class TiledTestState extends LycanState {
 	private function loadWorld():Void {
 		world = new World(new FlxPoint(spriteZoom, spriteZoom));
 		
-		var namedTileSets = new Map<String, TiledTileSet>();
-		var combinedTileSet:FlxTileFrames = null;
-		var namedObjectLayers = new Map<String, ObjectLayer>();
-		var namedTileLayers = new Map<String, TileLayer>();
-		var namedObjects = new Map<String, FlxBasic>();
-		
-		world.onLoadedTileSets.add((tiledMap)-> {
-			// Load tileset graphics
-			var tilesetBitmaps = new Array<BitmapData>();
-			for (tileset in tiledMap.tilesetArray) {
-				if (tileset.properties.contains("noload")) {
-					continue;
-				}
-				var imagePath = new Path(tileset.imageSource);
-				var processedPath = "assets/images/" + imagePath.file + "." + imagePath.ext;
-				tilesetBitmaps.push(FlxAssets.getBitmapData(processedPath));
-			}
-			
-			if (tilesetBitmaps.length == 0) {
-				throw "Cannot load an empty tilemap, as it will result in invalid bitmap data errors";
-			}
-			
-			// Combine tilesets into single tileset
-			var tileSize:FlxPoint = FlxPoint.get(tiledMap.tileWidth, tiledMap.tileHeight);
-			var spacing:FlxPoint = FlxPoint.get(2, 2);
-			combinedTileSet = FlxTileFrames.combineTileSets(tilesetBitmaps, tileSize, spacing, spacing);
-			tileSize.put();
-			spacing.put();
-			
-			namedTileSets = tiledMap.tilesets;
-		});
-		
-		world.onLoadedObjectLayer.add((tiledLayer, layer)-> {
-			if (tiledLayer.name == null || tiledLayer.name == "") {
-				return;
-			}
-			namedObjectLayers.set(tiledLayer.name, layer);
-		});
-		
-		world.onLoadedTileLayer.add((tiledLayer, layer)-> {
-			if (tiledLayer.name == null || tiledLayer.name == "") {
-				return;
-			}
-			namedTileLayers.set(tiledLayer.name, layer);
-		});
-		
 		var objectHandlers = new ObjectHandlers();
 		
-		// TODO is there any way around the single parameter limit for @:op?
-		// e.g. like by implementing @:from or @:to on the actual ObjectHandler so it's auto-converted there?
-		var pack = function(type:String, map:Map<String, FlxBasic>, handler:ObjectHandler) {
-			return { type: type, map: map, handler: handler };
-		};
-		
 		// Scale everything up
-		objectHandlers += (obj, layer)->{
+		objectHandlers.push((obj, layer)->{
 			obj.width *= spriteZoom;
 			obj.height *= spriteZoom;
 			obj.x *= spriteZoom;
 			obj.y *= spriteZoom;
+			return null;
+		});
+		
+		var objMap = new Map<TiledObject, FlxBasic>();
+
+		var filterByType = function(type:String, handler:TiledObject->ObjectLayer->FlxBasic):TiledObject->ObjectLayer->FlxBasic {
+			return function(o:TiledObject, l:ObjectLayer) {
+				if (o.type == type) {
+					var basic = handler(o, l);
+					if(basic != null) {
+						objMap.set(o, basic);
+					}
+					return basic;
+				}
+				return null;
+			}
 		};
-		objectHandlers += pack("player", namedObjects, (obj, layer)->{
+		
+		objectHandlers.push(filterByType("player", ((obj, layer, map)->{
 			var player = new Player(obj.x, obj.y, 30, 60);
 			// TODO I think this won't be positioning the body properly
 			// Perhaps we need to readd a setPositon for bodies from flixel coords?
 			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
+			
+			// TODO let's not make this a manual thing?
+			layer.add(player);
+			
 			return player;
-		});
-		objectHandlers += pack("crate", namedObjects, (obj, layer)->{
+		}).bind(_, _, objMap)));
+		
+		objectHandlers.push(filterByType("crate", ((obj, layer, map)->{
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
 			return null;
-		});
-		objectHandlers += pack("movingPlatform", namedObjects, (obj, layer)->{
-			// TODO
-			return null;
-		});
-		objectHandlers += pack("switch", namedObjects, (obj, layer)->{
-			// TODO
-			return null;
-		});
-		objectHandlers += pack("button", namedObjects, (obj, layer)->{
-			// TODO
-			return null;
-		});
-		objectHandlers += pack("oneway", namedObjects, (obj, layer)->{
-			//var oneway:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width * spriteZoom, obj.height * spriteZoom);
-			return null;
-		});
+		}).bind(_, _, objMap)));
 		
 		var tileLayerHandler:TileLayerHandler = function(tiledLayer:TiledTileLayer, layer:TileLayer):FlxTilemap {
 			
@@ -201,11 +151,11 @@ class TiledTestState extends LycanState {
 		};
 		
 		world.onLoadingComplete.add(()-> {
-			trace(namedObjects);
+			trace(world.namedObjects);
 			
 			// Set camera scroll bounds after loading
 			FlxG.camera.setScrollBoundsRect(0, 0, world.width * world.scale.x, world.height * world.scale.y, true);
-			player = cast namedObjects.get("player");
+			player = cast world.namedObjects.get("player");
 			
 			// TODO this would need the updatePosition thing
 			Sure.sure(player != null);
