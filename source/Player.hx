@@ -33,7 +33,7 @@ class Player extends LSprite implements CharacterController implements Groundabl
 		GraphicUtil.makePlaceholderGraphic(this, "player", width, height, [
 			{name: "idle", frameCount: 4},
 			{name: "run", frameCount: 8},
-			{name: "jumpUp", frameCount: 1},
+			{name: "jump", frameCount: 1},
 			{name: "zeroG", frameCount: 1},
 			{name: "fall", frameCount: 1}
 		], FlxColor.WHITE, 10);
@@ -43,12 +43,32 @@ class Player extends LSprite implements CharacterController implements Groundabl
 	
 	override public function update(dt:Float) {
 		super.update(dt);
-		
-		if (FlxG.keys.anyPressed([FlxKey.ENTER])) {
-			animation.play("run");
-		}
-		if (FlxG.keys.anyPressed([FlxKey.SPACE])) {
-			animation.play("idle");
-		}
 	}
+	
+	override function updateAnimation(dt:Float) {
+		var body = physics.body;
+		var velocity = body.velocity;
+		
+		if (groundable.isGrounded) {
+			//if (characterController.)
+			animation.play("idle");
+		} else {
+			if (velocity.y > 200) {
+				animation.play("fall");
+			} else if (velocity.y < -200) {
+				animation.play("jump");
+			} else {
+				animation.play("zeroG");
+			}
+		}
+		
+		setFacingFlip(RIGHT, false, false);
+		setFacingFlip(LEFT, true, false);
+		
+		
+		super.updateAnimation(dt);
+	}
+	
+	
+
 }

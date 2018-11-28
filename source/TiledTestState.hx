@@ -19,6 +19,7 @@ import lycan.world.World;
 import lycan.world.layer.ObjectLayer;
 import lycan.world.layer.TileLayer;
 import nape.phys.Material;
+import lycan.phys.PlatformerPhysics;
 
 using lycan.world.TileLayerHandler;
 
@@ -54,6 +55,8 @@ class TiledTestState extends LycanState {
 		#if !FLX_NO_DEBUG
 		Phys.enableDebugManipulator = true;
 		#end
+		
+		PlatformerPhysics.setupPlatformerPhysics();
 	}
 
 	private function destroyPhysics():Void {
