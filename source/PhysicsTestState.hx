@@ -26,7 +26,9 @@ class PhysicsTestState extends LycanState {
 	var e2:Edge;
 	var tl1:TimelineSprite;
 	var tl2:TimelineSprite;
-
+	
+	var movingPlatform:PhysSprite;
+	
 	override public function create():Void {
 		super.create();
 		
@@ -82,11 +84,17 @@ class PhysicsTestState extends LycanState {
 		signalSystem.edges.add(e2);
 		add(signalSystem);
 		
+		// Make a moving platform
+		movingPlatform = new PhysSprite(100, 100, 100, 100);
+		movingPlatform.physics.body.type = BodyType.KINEMATIC;
+		movingPlatform.physics.body.allowRotation = false;
+		movingPlatform.physics.setBodyMaterial(0, 5, 5);
+		
 		// Make crates
 		for (i in 0...6) {
 			var b:PhysSprite = cast add(new PhysSprite(Std.int(player.physics.body.position.x + 70 + 70 * i + 1), 400, 70, 70));
 			b.physics.body.allowRotation = false;
-			b.physics.setBodyMaterial(0, 5, 5, 2);
+			b.physics.setBodyMaterial(0, 5, 2, 2);
 		}
 		
 		var b:PhysSprite = cast add(new PhysSprite(400, Std.int(player.physics.body.position.y - 100), 200, 100));
@@ -118,6 +126,14 @@ class PhysicsTestState extends LycanState {
 		FlxG.watch.addQuick("n2", n1.signalOn);
 		FlxG.watch.addQuick("e2 prop", e2.propagation);
 		FlxG.watch.addQuick("n3", n1.signalOn);
+		
+		var vel = movingPlatform.physics.body.velocity;
+		vel.setxy(0, 0);
+		var spd = 220;
+		if (FlxG.keys.pressed.NUMPADEIGHT) vel.y -= spd;
+		if (FlxG.keys.pressed.NUMPADFIVE) vel.y += spd;
+		if (FlxG.keys.pressed.NUMPADFOUR) vel.x -= spd;
+		if (FlxG.keys.pressed.NUMPADSIX) vel.x += spd;
 		
 		//@:privateAccess tl1.timeline = n1.inputTimeline;
 		//@:privateAccess tl2.timeline = n1.propagationTimeline;
