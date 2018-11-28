@@ -23,6 +23,7 @@ import lycan.world.layer.ObjectLayer;
 import lycan.world.layer.TileLayer;
 import nape.phys.Material;
 import openfl.display.BitmapData;
+import lycan.phys.PlatformerPhysics;
 
 using lycan.world.TileLayerHandler;
 
@@ -38,6 +39,7 @@ class TiledTestState extends LycanState {
 		initPhysics();
 		
 		loadWorld();
+		PlatformerPhysics.setupPlatformerPhysics();
 	}
 	
 	override public function destroy():Void {
