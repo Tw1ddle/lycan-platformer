@@ -1,9 +1,9 @@
 package;
 
+import nape.dynamics.InteractionGroup;
 import flixel.FlxObject;
 import openfl.ui.Keyboard;
 import flash.events.KeyboardEvent;
-import flash.automation.KeyboardAutomationAction;
 import flash.events.Event;
 import nape.geom.Vec2;
 import nape.phys.BodyType;
@@ -14,19 +14,12 @@ import lycan.states.LycanState;
 import lycan.system.FpsText;
 import lycan.supply.Node;
 import lycan.phys.PlatformerPhysics;
+import openfl.ui.Mouse;
+import openfl.ui.MouseCursor;
 
 class PhysicsTestState extends LycanState {
     var player:Player;
 
-	var signalSystem:SignalSystem;
-	var n1:Node;
-	var n2:Node;
-	var n3:Node;
-	var e1:Edge;
-	var e2:Edge;
-	var tl1:TimelineSprite;
-	var tl2:TimelineSprite;
-	
 	var movingPlatform:PhysSprite;
 	
 	override public function create():Void {
@@ -56,34 +49,6 @@ class PhysicsTestState extends LycanState {
 		
 		uiGroup.add(new FpsText(0, 0, 24));
 		
-		
-		tl1 = cast uiGroup.add(new TimelineSprite(100, 100));
-		tl2 = cast uiGroup.add(new TimelineSprite(100, 400));
-		FlxG.stage.addEventListener(KeyboardEvent.KEY_DOWN, (e:KeyboardEvent)->{
-			if (e.keyCode == Keyboard.D) {
-				tl1.timeline = tl1.timeline.difference(tl2.timeline);
-			}
-			if (e.keyCode == Keyboard.R) {
-				tl2.timeline.clear();
-			}
-			if (e.keyCode == Keyboard.A) {
-				tl1.timeline.add(tl2.timeline);
-			}
-		});
-		
-		signalSystem = new SignalSystem();
-		n1 = new Node();
-		n2 = new Node();
-		n3 = new Node();
-		e1 = new Edge(n1, n2);
-		e2 = new Edge(n2, n3);
-		signalSystem.nodes.add(n1);
-		signalSystem.nodes.add(n2);
-		signalSystem.nodes.add(n3);
-		signalSystem.edges.add(e1);
-		signalSystem.edges.add(e2);
-		add(signalSystem);
-		
 		// Make a moving platform
 		movingPlatform = new PhysSprite(100, 100, 100, 100);
 		movingPlatform.physics.body.type = BodyType.KINEMATIC;
@@ -91,9 +56,11 @@ class PhysicsTestState extends LycanState {
 		movingPlatform.physics.setBodyMaterial(0, 5, 5);
 		
 		// Make crates
-		for (i in 0...6) {
+		for (i in 0...2) {
 			var b:PhysSprite = cast add(new PhysSprite(Std.int(player.physics.body.position.x + 70 + 70 * i + 1), 400, 70, 70));
 			b.physics.body.allowRotation = false;
+			b.physics.body.isBullet = true;
+			b.physics.body.mass = 50;
 			b.physics.setBodyMaterial(0, 5, 2, 2);
 		}
 		
@@ -114,19 +81,6 @@ class PhysicsTestState extends LycanState {
 		super.update(dt);
 		handleInput(dt);
 		
-		// Playing with the supply network
-		if (FlxG.keys.pressed.SPACE) {
-			n1.addSignal();
-			
-			FlxG.watch.addQuick("s", "t");
-		} else  FlxG.watch.addQuick("s","f");
-		
-		FlxG.watch.addQuick("n1", n1.signalOn + " " + n1.propagation);
-		FlxG.watch.addQuick("e1 prop", e1.propagation);
-		FlxG.watch.addQuick("n2", n1.signalOn);
-		FlxG.watch.addQuick("e2 prop", e2.propagation);
-		FlxG.watch.addQuick("n3", n1.signalOn);
-		
 		var vel = movingPlatform.physics.body.velocity;
 		vel.setxy(0, 0);
 		var spd = 220;
@@ -134,9 +88,6 @@ class PhysicsTestState extends LycanState {
 		if (FlxG.keys.pressed.NUMPADFIVE) vel.y += spd;
 		if (FlxG.keys.pressed.NUMPADFOUR) vel.x -= spd;
 		if (FlxG.keys.pressed.NUMPADSIX) vel.x += spd;
-		
-		//@:privateAccess tl1.timeline = n1.inputTimeline;
-		//@:privateAccess tl2.timeline = n1.propagationTimeline;
 	}
 	
 	override public function draw():Void {
