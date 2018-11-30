@@ -1,29 +1,12 @@
 package;
 
-import nape.geom.ConvexResult;
-import nape.phys.Body;
-import flixel.math.FlxMath;
-import lycan.phys.PlatformerPhysics;
-import nape.phys.Material;
-import nape.shape.Polygon;
-import nape.geom.Vec2;
-import nape.shape.Circle;
-import flixel.math.FlxAngle;
 import flixel.math.FlxPoint;
-import flixel.math.FlxVector;
-import flixel.FlxG;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
 import lycan.entities.LSprite;
 import lycan.util.GraphicUtil;
 import lycan.world.components.Groundable;
 import lycan.world.components.PhysicsEntity;
-import nape.shape.Shape;
-import nape.phys.BodyType;
-import lycan.phys.Phys;
-import lycan.components.Entity;
-import lycan.components.Component;
-import flixel.FlxObject;
 import lycan.world.components.CharacterController;
 
 class Player extends LSprite implements CharacterController implements Groundable implements PhysicsEntity {

@@ -1,5 +1,6 @@
 package;
 
+import SignalTile;
 import nape.dynamics.InteractionGroup;
 import flixel.FlxObject;
 import openfl.ui.Keyboard;
@@ -21,6 +22,8 @@ class PhysicsTestState extends LycanState {
     var player:Player;
 
 	var movingPlatform:PhysSprite;
+	
+	var powerSource:SignalTile;
 	
 	override public function create():Void {
 		super.create();
@@ -70,6 +73,16 @@ class PhysicsTestState extends LycanState {
 		b.allowCollisions = FlxObject.FLOOR;
 		
 		PlatformerPhysics.setupPlatformerPhysics();
+		SignalTile.setupPhysics();
+		
+		powerSource = cast add(new SignalTile(70, 70, true, true, true, true));
+		powerSource.physics.body.position.setxy(300, 500);
+		var s:SignalTile = cast add(new SignalTile(70, 70, true, true, false, false));
+		s.physics.body.position.setxy(460, 500);
+		var s:SignalTile = cast add(new SignalTile(70, 70, false, false, true, true));
+		s.physics.body.position.setxy(540, 500);
+		var s:SignalTile = cast add(new SignalTile(70, 70, false, true, true, false));
+		s.physics.body.position.setxy(610, 500);
 	}
 	
 	override public function destroy():Void {
@@ -80,6 +93,8 @@ class PhysicsTestState extends LycanState {
 	override public function update(dt:Float):Void {
 		super.update(dt);
 		handleInput(dt);
+		
+		powerSource.centerNode.applySignal(dt);
 		
 		var vel = movingPlatform.physics.body.velocity;
 		vel.setxy(0, 0);

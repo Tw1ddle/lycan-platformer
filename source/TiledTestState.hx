@@ -13,21 +13,19 @@ import haxe.ds.Map;
 import lycan.phys.Phys;
 import lycan.states.LycanState;
 import lycan.system.FpsText;
-import lycan.world.ObjectHandler;
-import lycan.world.ObjectHandler.ObjectHandlers;
+import lycan.world.WorldHandlers;
 import lycan.world.World;
 import lycan.world.layer.ObjectLayer;
 import lycan.world.layer.TileLayer;
 import nape.phys.Material;
 import lycan.phys.PlatformerPhysics;
-
-using lycan.world.TileLayerHandler;
+import flixel.addons.editors.tiled.TiledMap;
 
 class TiledTestState extends LycanState {
     var spriteZoom:Int = 3;
 	var world:World = null;
 	var player:Player = null;
-
+	
 	override public function create():Void {
 		super.create();
 		
@@ -66,63 +64,67 @@ class TiledTestState extends LycanState {
 	private function loadWorld():Void {
 		world = new World(new FlxPoint(spriteZoom, spriteZoom));
 		
-		var objectHandlers = new ObjectHandlers();
+		var objectHandlers:ObjectHandlers = new ObjectHandlers();
+		var objectLayerHandlers:ObjectLayerHandlers = new ObjectLayerHandlers();
+		var tileLayerHandler:TileLayerHandler;
+		var worldHandlers:WorldHandlers = new WorldHandlers();
+		
+		function loadObject(type:String, func:TiledObject->ObjectLayer->Map<TiledObject, FlxBasic>->Void) {
+			objectHandlers.add((obj:TiledObject, layer:ObjectLayer, map:Map<TiledObject, FlxBasic>)->{
+				if (obj.type != type) return;
+				var objExists:Bool = map.exists(obj);
+				func(obj, layer, map);
+				var o = map.get(obj);
+				var name = obj.name;
+				// If we have a flixel object
+				if (o != null) {
+					// Add to ObjectLayer if it's new
+					if (!objExists) {
+						layer.add(o);
+					}
+					// Add to named object map
+					if (name != null && name != "") {
+						var wo = layer.world.namedObjects;
+						// Warn if we already had a named instance
+						if (wo.exists(name)) {
+							FlxG.log.warn("Loaded multiple objects with name: " + name);
+						}
+						layer.world.namedObjects.set(name, o);
+					}
+				}
+			});
+		}
+		
+		// ---- OBJECT LOADING DEFINITIONS ----
 		
 		// Scale everything up
-		objectHandlers.push((obj, layer)->{
+		objectHandlers.add((obj, layer, map)->{
 			obj.width *= spriteZoom;
 			obj.height *= spriteZoom;
 			obj.x *= spriteZoom;
 			obj.y *= spriteZoom;
-			return null;
 		});
 		
-		var objMap = new Map<TiledObject, FlxBasic>();
-
-		var filterByType = function(type:String, handler:TiledObject->ObjectLayer->FlxBasic):TiledObject->ObjectLayer->FlxBasic {
-			return function(o:TiledObject, l:ObjectLayer) {
-				if (o.type == type) {
-					var basic = handler(o, l);
-					if(basic != null) {
-						objMap.set(o, basic);
-					}
-					return basic;
-				}
-				return null;
-			}
-		};
+		loadObject("player", (obj, layer, map)->{
+			var player = new Player(obj.x, obj.y + obj.height - 60, 30, 60);
+			player.physics.snapBodyToEntity();
+			map.set(obj, player);
+		});
 		
-		objectHandlers.push(filterByType("player", ((obj, layer, map)->{
-			var player = new Player(obj.x, obj.y, 30, 60);
-			// TODO I think this won't be positioning the body properly
-			// Perhaps we need to readd a setPositon for bodies from flixel coords?
-			player.physics.position.setxy(obj.x, obj.y + obj.height - player.height);
-			
-			// TODO let's not make this a manual thing?
-			layer.add(player);
-			
-			return player;
-		}).bind(_, _, objMap)));
-		
-		objectHandlers.push(filterByType("crate", ((obj, layer, map)->{
+		loadObject("crate", (obj, layer, map)->{
 			//var crate:PhysSprite = new PhysSprite(obj.x, obj.y, obj.width, obj.height);
-			return null;
-		}).bind(_, _, objMap)));
+		});
 		
-		var tileLayerHandler:TileLayerHandler = function(tiledLayer:TiledTileLayer, layer:TileLayer):FlxTilemap {
-			
+		
+		// ---- TILE LAYER LOADING DEFINITIONS ----
+		tileLayerHandler = (tiledLayer, layer)->{
 			var layerProperties = tiledLayer.properties;
-			
-			var key = (p:String)->{
-				return layerProperties.contains(p);
-			}
-			var val = (p:String)->{
-				return layerProperties.get(p);
-			}
+			var hasKey = layerProperties.contains;
+			var val = layerProperties.get;
 			
 			// TODO have engine specific properties for physics
 			var tilemap:FlxTilemap = function():FlxTilemap {
-				if (key("collision")) {
+				if (hasKey("collision")) {
 					if (val("collision") == "nape") {
 						// TODO?
 					}
@@ -138,12 +140,12 @@ class TiledTestState extends LycanState {
 			// TODO decide scale based on layer info/properties, not world?
 			tilemap.scale.copyFrom(world.scale);
 			
-			tilemap.visible = key("hidden") ? false : true;
+			tilemap.visible = hasKey("hidden") ? false : true;
 			
-			if (key("collision")) {
+			if (hasKey("collision")) {
 				var napeMap:FlxNapeTilemap = cast tilemap;
 				
-				napeMap.setupCollideIndex(1, new Material(0, 0, 2, 1, 0.001));
+				napeMap.setupCollideIndex(1, new Material(0, 1, 2, 0, 0.001));
 				napeMap.body.scaleShapes(world.scale.x, world.scale.y);
 				napeMap.body.space = Phys.space;
 				
@@ -153,21 +155,20 @@ class TiledTestState extends LycanState {
 			return tilemap;
 		};
 		
-		world.onLoadingComplete.add(()-> {
-			trace(world.namedObjects);
+		// worldHandlers.add(()->{
 			
-			// Set camera scroll bounds after loading
-			FlxG.camera.setScrollBoundsRect(0, 0, world.width * world.scale.x, world.height * world.scale.y, true);
-			player = cast world.namedObjects.get("player");
-			
-			// TODO this would need the updatePosition thing
-			Sure.sure(player != null);
-			FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
-			FlxG.camera.snapToTarget();
-			
-			add(world);
-		});
+		// });
 		
-		world.load("assets/data/world.tmx", objectHandlers, tileLayerHandler);
+		
+		// Load the world
+		world.load(new TiledMap("assets/data/world.tmx"), objectHandlers, objectLayerHandlers, tileLayerHandler, worldHandlers);
+		
+		// Set camera scroll bounds after loading
+		FlxG.camera.setScrollBoundsRect(0, 0, world.width * world.scale.x, world.height * world.scale.y, true);
+		player = cast world.namedObjects.get("player");
+		FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0.9);
+		FlxG.camera.snapToTarget();
+		
+		add(world);
 	}
 }
