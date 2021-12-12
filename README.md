@@ -1,7 +1,3 @@
-# Lycan Platformer // TODO some sort of logo when we think it's ready
-The aim of this project is to create a basic platformer project we can use as Ludum Dare base code and Haxe game development.
+# Lycan Platformer
 
-// TODO build status, documentation etc...
-
-## Usage
-At present the codebase is unstable and totally unfinished. Don't use this for anything!
+The aim of this project was to create a basic platformer project we could use as Ludum Dare base code and Haxe game development. The codebase is totally unfinished. Don't use this for anything!
